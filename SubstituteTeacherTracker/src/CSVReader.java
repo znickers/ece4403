@@ -5,19 +5,15 @@ import java.io.IOException;
 import org.apache.commons.csv.*;
 
 public class CSVReader {
-	private static CSVParser csvParser; //new CSVParser(new FileReader("contacts.csv"), CSVFormat.EXCEL.withFirstRecordAsHeader());
-	
-	public CSVReader() {//throws IOException {
-		//csvParser = new CSVParser(new FileReader("contacts.csv"), CSVFormat.EXCEL.withFirstRecordAsHeader());
-	}
+	private static CSVParser csvParser;
 	
 	// TODO: finish reading absences
-	// read absences from absences.csv
+	// DESC: read absences from absences.csv
 	public static void readAbsences(String filename) {
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
-			// parse thru entries in absences.csv
+			// DESC: parse thru entries in absences.csv
 			for (CSVRecord record : csvParser) {
 				String name = record.get("name");
 				String startDate = record.get("start_date");
@@ -41,12 +37,12 @@ public class CSVReader {
 	}
 	
 	// TODO: finish reading absences
-	// read substitutes from substitutes.csv
+	// DESC: read substitutes from substitutes.csv
 	public static void readSubstitutes(String filename) {
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
-			// parse thru entries in substitutes.csv
+			// DESC: parse thru entries in substitutes.csv
 			for (CSVRecord record : csvParser) {
 				String name = record.get("name");
 				String startDate = record.get("start_date");
@@ -70,12 +66,12 @@ public class CSVReader {
 	}
 	
 	// TODO: finish reading preferred subs
-	// read preferred substitutes from preferred.csv
+	// DESC: read preferred substitutes from preferred.csv
 	public static void readPreferred(String filename) {
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
-			// parse thru entries in preferred.csv
+			// DESC: parse thru entries in preferred.csv
 			for (CSVRecord record : csvParser) {
 				String teacherName = record.get("teacher");
 				String subName = record.get("preferred substitute");
@@ -94,12 +90,12 @@ public class CSVReader {
 	}
 	
 	// TODO: finish reading on-call contracts
-	// read on-call contracts from oncalls.csv
+	// DESC: read on-call contracts from oncalls.csv
 	public static void readOnCalls(String filename) {
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
-			// parse thru entries in oncalls.csv
+			// DESC: parse thru entries in oncalls.csv
 			for (CSVRecord record : csvParser) {
 				String subName = record.get("substitute");
 				String location = record.get("on-call contract location");
