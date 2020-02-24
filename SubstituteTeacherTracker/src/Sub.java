@@ -49,15 +49,15 @@ public class Sub {
 	}
 	
 	public void assignAbsence(Absence absence) {
-		assignedAbsences.addAbsence(absence);
+		assignedAbsences.add(absence);
 	}
 	
 	public void addSchool(School school) {
-		schools.addSchool(school);
+		schools.add(school);
 	}
 	
 	// JO: might need to catch exception
 	public void removeBlacklist(School school) {
-		blacklist.removeSchool(school);
+		blacklist.remove(school);
 	}
 }

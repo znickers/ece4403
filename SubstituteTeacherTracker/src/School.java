@@ -13,11 +13,11 @@ public class School {
 	}
 	
 	public void addTeacher(Teacher teacher) {
-		teachers.addTeacher(teacher);
+		teachers.add(teacher);
 	}
 	
 	// JO: might need to catch exception
 	public void removeTeacher(Teacher teacher) {
-		teachers.removeTeacher(teacher);
+		teachers.remove(teacher);
 	}
 }

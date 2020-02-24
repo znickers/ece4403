@@ -14,7 +14,7 @@ public class Teacher {
 		this.school = school;
 		this.teachables = teachables;
 		this.absences = new AbsenceList();
-		this.absences.addAbsence(absence);
+		this.absences.add(absence);
 	}
 	
 	// DESC: constructor for new Teacher with recurring absences
@@ -42,7 +42,7 @@ public class Teacher {
 	}
 	
 	public void addAbsence(Absence absence) {
-		absences.addAbsence(absence);
+		absences.add(absence);
 	}
 	
 	public Sub getPreferredSub() {
