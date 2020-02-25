@@ -25,12 +25,10 @@ public class School {
 		String str = "School: "+name;
 		
 		if(!teachers.isEmpty()) {
-			str += "\nTeachers:\n";
+			str += "\nTeachers:";
 			for(Teacher t : teachers) {
-				str += t.getName()+"\n";
+				str += "\n"+t.getName();
 			}
-		} else {
-			str += "\n";
 		}
 		return str;
 	}

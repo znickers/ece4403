@@ -63,9 +63,7 @@ public class Teacher {
 			}
 		}
 		if(preferredSub != null) {
-			str += "\nPreferred substitute: "+preferredSub.getName()+"\n";
-		} else {
-			str += "\n";
+			str += "\nPreferred substitute: "+preferredSub.getName();
 		}
 		
 		return str;

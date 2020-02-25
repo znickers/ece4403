@@ -61,7 +61,8 @@ public class Sub {
 		blacklist.remove(school);
 	}
 	
-	// JO: only printing name and teachables, maybe print more later
+	// JO: need to test all toString cases
+	// JO: may need to update the unavailabilities if we make them a class later
 	public String toString() {
 		boolean first = true;
 		String str = "";
@@ -75,7 +76,30 @@ public class Sub {
 				str += ", "+t;
 			}
 		}
-		str += "\n";
+		if(!unavailabilities.isEmpty()) {
+			str += "\nUnavailabilities:";
+			for(String u : unavailabilities) {
+				str += "\n"+u;
+			}
+		}
+		if(!blacklist.isEmpty()) {
+			first = true;
+			str += "\nBlacklist: ";
+			for(School b : blacklist) {
+				if(first) {
+					str += b.getName();
+					first = false;
+				} else {
+					str += ", "+b.getName();
+				}
+			}
+		}
+		if(!assignedAbsences.isEmpty()) {
+			str += "\nAssigned absences:\n";
+			for(Absence ab : assignedAbsences) {
+				str += ab;
+			}
+		}
 		return str;
 	}
 }

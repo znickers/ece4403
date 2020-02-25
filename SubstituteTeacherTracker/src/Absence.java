@@ -58,11 +58,11 @@ public class Absence {
 		String str = "";
 		if(status.equalsIgnoreCase("UNASSIGNED")) {
 			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
-				   "\nLocation: "+school.getName()+"\nStatus: "+status+"\n";
+				   "\nLocation: "+school.getName()+"\nStatus: "+status;
 		} else if(status.equalsIgnoreCase("ASSIGNED")) {
 			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
 					   "\nLocation: "+school.getName()+"\nStatus: "+status+
-				   "\nAssigned substitute: "+sub.getName()+"\n";
+				   "\nAssigned substitute: "+sub.getName();
 		}
 		return str;
 	}
