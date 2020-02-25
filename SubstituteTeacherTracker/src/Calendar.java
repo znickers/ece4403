@@ -20,7 +20,7 @@ public class Calendar {
 		
 		AbsenceList al = d.getAbsenceList();
 		
-		al.addAbsence(new Absence(teacher,d.getDate(),period,teacher.getSchool()));
+		al.add(new Absence(teacher,d.getDate(),period,teacher.getSchool()));
 	}
 	
 	// TODO: finish and test method

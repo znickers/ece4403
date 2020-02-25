@@ -60,4 +60,22 @@ public class Sub {
 	public void removeBlacklist(School school) {
 		blacklist.remove(school);
 	}
+	
+	// JO: only printing name and teachables, maybe print more later
+	public String toString() {
+		boolean first = true;
+		String str = "";
+		
+		str += "Substitute: "+name+"\nTeachables: ";
+		for(String t : teachables) {
+			if(first) {
+				str += t;
+				first = false;
+			} else {
+				str += ", "+t;
+			}
+		}
+		str += "\n";
+		return str;
+	}
 }

@@ -12,6 +12,7 @@ public class Absence {
 		this.date = date;
 		this.period = period;
 		this.school = school;
+		updateStatus();
 	}
 	
 	public Teacher getTeacher() {
@@ -42,9 +43,27 @@ public class Absence {
 	
 	public void setSub(Sub sub) {
 		this.sub = sub;
+		updateStatus();
 	}
 	
-	public void setStatus(String status) {
-		this.status = status;
+	private void updateStatus() {
+		if(this.sub == null) {
+			this.status = "UNASSIGNED";
+		} else {
+			this.status = "ASSIGNED";
+		}
+	}
+	
+	public String toString() {
+		String str = "";
+		if(status.equalsIgnoreCase("UNASSIGNED")) {
+			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+				   "\nLocation: "+school.getName()+"\nStatus: "+status+"\n";
+		} else if(status.equalsIgnoreCase("ASSIGNED")) {
+			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+					   "\nLocation: "+school.getName()+"\nStatus: "+status+
+				   "\nAssigned substitute: "+sub.getName()+"\n";
+		}
+		return str;
 	}
 }

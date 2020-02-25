@@ -1,6 +1,8 @@
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.commons.csv.*;
 
@@ -9,10 +11,10 @@ public class CSVReader {
 	
 	// TODO: finish reading absences
 	// DESC: read absences from absences.csv
-	public static void readAbsences(String filename) {
+	public static AbsenceList readAbsences(String filename) {
+		AbsenceList absenceList = new AbsenceList();
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
-			
 			// DESC: parse thru entries in absences.csv
 			for (CSVRecord record : csvParser) {
 				String name = record.get("name");
@@ -21,24 +23,46 @@ public class CSVReader {
 				String endDate = record.get("end_date");
 				String endPeriod = record.get("end_period");
 				String location = record.get("location");
-				String teachables = record.get("teachables");
+				String str_teachables = record.get("teachables");
 				
 				// DEBUG CODE: output csvParser results
-				System.out.println("Absence Record: "+name+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod+" | "+location+" | "+teachables);
+				System.out.println("Absence Record: "+name+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod+" | "+location+" | "+str_teachables);
+				
+				School school = new School(location);
+				ArrayList<String> al_teachables = new ArrayList<String>();
+				al_teachables.addAll(Arrays.asList(str_teachables.toLowerCase().split(" ")));
 				
 				// TODO: create an absence
+				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
+					// TODO: generate individual absences and add to the absenceList
+					
+					// TEMP: reminder println to implement feature
+					System.out.println("Extended absence read.");
+				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
+					absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+				} else {	// invalid date input
+					// JO: thought this should be considered, could assume all dates are input correctly
+					// JO: cases - startDate happens after endDate, incorrect format, incorrect entry
+					
+					// TODO: handle invalid inputs
+					System.out.println("Invalid absence date entered.");
+				}
 			}
 			
 			csvParser.close();
 		} catch(IOException ioe) {
 			System.out.println("Unable to find absences.csv");
 			ioe.printStackTrace();
+			System.exit(1);		// JO: close program if file not found, could find more elegant method to handle this
 		}
+		
+		return absenceList;
 	}
 	
 	// TODO: finish reading absences
 	// DESC: read substitutes from substitutes.csv
-	public static void readSubstitutes(String filename) {
+	public static SubList readSubstitutes(String filename) {
+		SubList subList = new SubList();
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
@@ -62,7 +86,10 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find substitutes.csv");
 			ioe.printStackTrace();
+			System.exit(1);		// JO: close program if file not found, could find more elegant method to handle this
 		}
+		
+		return subList;
 	}
 	
 	// TODO: finish reading preferred subs
@@ -86,6 +113,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find preferred.csv");
 			ioe.printStackTrace();
+			System.exit(1);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 	
@@ -110,6 +138,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find oncalls.csv");
 			ioe.printStackTrace();
+			System.exit(1);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 }

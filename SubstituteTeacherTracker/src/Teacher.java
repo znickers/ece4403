@@ -8,21 +8,13 @@ public class Teacher {
 	private AbsenceList absences;
 	private Sub preferredSub;
 	
-	// DESC: constructor for new Teacher with single absence
-	public Teacher(String name, School school, ArrayList<String> teachables, Absence absence) {
+	// JO: need to add Absences after initialization
+	// DESC: constructor for new Teacher
+	public Teacher(String name, School school, ArrayList<String> teachables) {
 		this.name = name;
 		this.school = school;
 		this.teachables = teachables;
 		this.absences = new AbsenceList();
-		this.absences.add(absence);
-	}
-	
-	// DESC: constructor for new Teacher with recurring absences
-	public Teacher(String name, School school, ArrayList<String> teachables, AbsenceList absences) {
-		this.name = name;
-		this.school = school;
-		this.teachables = teachables;
-		this.absences = absences;
 	}
 	
 	public String getName() {
@@ -45,11 +37,37 @@ public class Teacher {
 		absences.add(absence);
 	}
 	
+	public void addAbsenceList(AbsenceList absences) {
+		this.absences.addAll(absences);
+	}
+	
 	public Sub getPreferredSub() {
 		return preferredSub;
 	}
 	
 	public void setPrefferedSub(Sub sub) {
 		preferredSub = sub;
+	}
+	
+	public String toString() {
+		boolean first = true;
+		String str = "";
+		
+		str += "Teacher: "+name+"\nSchool: "+school.getName()+"\nTeachables: ";
+		for(String t : teachables) {
+			if(first) {
+				str += t;
+				first = false;
+			} else {
+				str += ", "+t;
+			}
+		}
+		if(preferredSub != null) {
+			str += "\nPreferred substitute: "+preferredSub.getName()+"\n";
+		} else {
+			str += "\n";
+		}
+		
+		return str;
 	}
 }

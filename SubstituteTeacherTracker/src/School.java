@@ -20,4 +20,18 @@ public class School {
 	public void removeTeacher(Teacher teacher) {
 		teachers.remove(teacher);
 	}
+	
+	public String toString() {
+		String str = "School: "+name;
+		
+		if(!teachers.isEmpty()) {
+			str += "\nTeachers:\n";
+			for(Teacher t : teachers) {
+				str += t.getName()+"\n";
+			}
+		} else {
+			str += "\n";
+		}
+		return str;
+	}
 }
