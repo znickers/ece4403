@@ -7,7 +7,7 @@ public class Sub {
 	private SchoolList blacklist;
 	// JO: maybe separate class for unavailabilities like with Absences
 	// JO: can have UnavailabilityList also
-	private ArrayList<String> unavailabilities;
+	private UnavailabilityList unavailabilities;
 	private SchoolList schools;		// schools a Sub is assigned to
 	private AbsenceList assignedAbsences;	// absences a Sub is assigned to
 	
@@ -18,7 +18,7 @@ public class Sub {
 		this.name = name;
 		this.teachables = teachables;
 		this.blacklist = new SchoolList();
-		this.unavailabilities = new ArrayList<String>();
+		this.unavailabilities = new UnavailabilityList();
 		this.schools = new SchoolList();
 		this.assignedAbsences = new AbsenceList();
 	}
@@ -27,7 +27,7 @@ public class Sub {
 		this.blacklist = blacklist;
 	}
 	
-	public void setUnavailabilities(ArrayList<String> unavailabilities) {
+	public void setUnavailabilities(UnavailabilityList unavailabilities) {
 		this.unavailabilities = unavailabilities;
 	}
 	
@@ -78,7 +78,7 @@ public class Sub {
 		}
 		if(!unavailabilities.isEmpty()) {
 			str += "\nUnavailabilities:";
-			for(String u : unavailabilities) {
+			for(Unavailability u : unavailabilities) {
 				str += "\n"+u;
 			}
 		}
