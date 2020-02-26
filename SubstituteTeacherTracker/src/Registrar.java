@@ -57,6 +57,9 @@ public class Registrar {
 		System.out.println(s1);
 		System.out.println();
 		
+		// DEBUG: CSVWriter output
+		CSVWriter.writeAssignments("data/assignments.csv", al);
+		
 		// DEBUG: test code for incorrect filename
 //		CSVReader.readSubstitutes("myfile.csv");
 //		System.out.println("Test output after incorrect filename");
