@@ -68,41 +68,20 @@ public class CSVReader {
 			// DESC: parse thru entries in substitutes.csv
 			for (CSVRecord record : csvParser) {
 				String name = record.get("name");
-				String startDate = record.get("start_date");
-				String startPeriod = record.get("start_period");
-				String endDate = record.get("end_date");
-				String endPeriod = record.get("end_period");
 				String blacklist = record.get("blacklist");
 				String str_teachables = record.get("teachables");
 				
 				// DEBUG: output csvParser results
-				System.out.println("Substitute Record: "+name+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod+" | "+blacklist+" | "+str_teachables);
-				
+				System.out.println("Substitute Record: "+name+" | "+blacklist+" | "+str_teachables);
+
 				// TODO: create a substitute
 				ArrayList<String> al_teachables = new ArrayList<String>();
 				al_teachables.addAll(Arrays.asList(str_teachables.toLowerCase().split(" ")));
 				Sub sub = new Sub(name,al_teachables);
 				
-				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
-					// TODO: generate individual unavailabilities and add to an unavailabilitiesList
-					
-					// TEMP: reminder println to implement feature
-					System.out.println("Extended sub unavailabilities read.");
-				} else if((startDate+startPeriod+endDate+endPeriod).equals("")) {
-					subList.add(sub);
-				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
-//					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
-					UnavailabilityList ul = new UnavailabilityList();
-					ul.add(new Unavailability(sub,startDate+" "+startPeriod));
-					sub.setUnavailabilities(ul);
-					subList.add(sub);
-				} else {	// invalid date input
-					// JO: thought this should be considered, could assume all dates are input correctly
-					// JO: cases - startDate happens after endDate, incorrect format, incorrect entry
-					
-					// TODO: handle invalid inputs
-					System.out.println("Invalid sub unavailability date entered.");
-				}
+				// TODO: set sub's blacklist
+				
+				subList.add(sub);
 			}
 			csvParser.close();
 		} catch(IOException ioe) {
@@ -111,6 +90,55 @@ public class CSVReader {
 			System.exit(11);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 		return subList;
+	}
+	
+	// TODO: finish reading on-call contracts
+	// DESC: read unavailabilities from unavailabilities.csv
+	public static void readUnavailabilities(String filename) {
+		try {
+			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
+			
+			// DESC: parse thru entries in unavailabilities.csv
+			for (CSVRecord record : csvParser) {
+				String subName = record.get("substitute");
+				String startDate = record.get("start_date");
+				String startPeriod = record.get("start_period");
+				String endDate = record.get("end_date");
+				String endPeriod = record.get("end_period");
+				
+				// DEBUG: output csvParser results
+				System.out.println("Unavailability Record: "+subName+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod);
+				
+				// TODO: assign unavailabilities to Sub
+				
+				// JO: REFACTOR into readUnavailabilities
+//				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
+//					// TODO: generate individual unavailabilities and add to an unavailabilitiesList
+//					
+//					// TEMP: reminder println to implement feature
+//					System.out.println("Extended sub unavailabilities read.");
+//				} else if((startDate+startPeriod+endDate+endPeriod).equals("")) {
+//					subList.add(sub);
+//				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
+////					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
+//					UnavailabilityList ul = new UnavailabilityList();
+//					ul.add(new Unavailability(sub,startDate+" "+startPeriod));
+//					sub.setUnavailabilities(ul);
+//					subList.add(sub);
+//				} else {	// invalid date input
+//					// JO: thought this should be considered, could assume all dates are input correctly
+//					// JO: cases - startDate happens after endDate, incorrect format, incorrect entry
+//					
+//					// TODO: handle invalid inputs
+//					System.out.println("Invalid sub unavailability date entered.");
+//				}
+			}
+			csvParser.close();
+		} catch(IOException ioe) {
+			System.out.println("Unable to find unavailabilities.csv");
+			ioe.printStackTrace();
+			System.exit(12);		// JO: close program if file not found, could find more elegant method to handle this
+		}
 	}
 	
 	// TODO: finish reading preferred subs
@@ -133,7 +161,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find preferred.csv");
 			ioe.printStackTrace();
-			System.exit(12);		// JO: close program if file not found, could find more elegant method to handle this
+			System.exit(13);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 	
@@ -157,7 +185,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find oncalls.csv");
 			ioe.printStackTrace();
-			System.exit(13);		// JO: close program if file not found, could find more elegant method to handle this
+			System.exit(14);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 }

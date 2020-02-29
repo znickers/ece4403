@@ -1,5 +1,5 @@
-name,start_date,start_period,end_date,end_period,blacklist,teachables
-Tony Liew,,,,,,science gym
-Rudi Hurnik,Oct 31 2020,PM,Oct 31 2020,PM,,reading writing biology
-John Deer,,,,,,english reading writing
-Jane Doe,,,,,,history reading writing
+name,blacklist,teachables
+Tony Liew,,science gym
+Rudi Hurnik,,reading writing biology
+John Deer,,english reading writing
+Jane Doe,,history reading writing

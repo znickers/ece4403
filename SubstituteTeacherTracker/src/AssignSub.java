@@ -9,7 +9,7 @@ public class AssignSub {
 	
 	// SIE: all preferences/conditions here (absences, teachables, etc)
 	
-	// SIE: make sure the subs arent being assigned to two of the same periods
+	// SIE: make sure the subs aren't being assigned to two of the same periods
 	public int checkDate(Absence ab) {
 		int date = 1;
 		for(int i = 0; i < sameDate.size(); i++) {
