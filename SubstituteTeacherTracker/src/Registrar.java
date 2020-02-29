@@ -12,18 +12,20 @@ public class Registrar {
 		CSVReader.readOnCalls("data/oncalls.csv");
 		
 		// DEBUG: test code for Absence toString()
+		//AbsenceList coveredAb = new AbsenceList();
 		System.out.println();
 		int sub = 1;
 		System.out.println("AbsenceList:");
 		for(Absence ab : al) {
 			if(sub==1) {
-				ab.setSub(new Sub("Ned Shneebly",new ArrayList<String>()));
+				// SIE: pick a sub from the sub arrayList, make sure same sub cant be put into
+				ab.setSub(new AssignSub().getSub(sl, ab));
 			}
-			sub--;
+			//sub--;
 			System.out.println(ab);
 			System.out.println();
 		}
-		
+		/*
 		System.out.println("SubList:");
 		for(Sub s : sl) {
 			System.out.println(s);
@@ -56,9 +58,9 @@ public class Registrar {
 		Sub s1 = new Sub("sub2",t);
 		System.out.println(s1);
 		System.out.println();
-		
+		*/
 		// DEBUG: test code for incorrect filename
-//		CSVReader.readSubstitutes("myfile.csv");
-//		System.out.println("Test output after incorrect filename");
+		//CSVReader.readSubstitutes("myfile.csv");
+		//System.out.println("Test output after incorrect filename");
 	}
 }

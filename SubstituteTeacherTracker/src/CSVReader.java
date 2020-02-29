@@ -37,7 +37,41 @@ public class CSVReader {
 					// TODO: generate individual absences and add to the absenceList
 					
 					// TEMP: reminder println to implement feature
-					System.out.println("Extended absence read.");
+					System.out.println("\nExtended absence read.");
+					
+					DateConverter dateconvert = new DateConverter();
+					int[] ISOStart = dateconvert.convertDateString(startDate);
+					int[] ISOEnd = dateconvert.convertDateString(endDate);
+					
+					int ExtendedAbsence = ((ISOEnd[0] - ISOStart[0])*7) + (ISOEnd[1] - ISOStart[1] +1);
+					
+					for(int i = 0; i < ExtendedAbsence; i++) {
+						if(i == 0) {
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+						else if((i == 0) && (startPeriod.equals("AM"))){
+							startPeriod = "PM";
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+						else if((i == (ExtendedAbsence - 1)) && endPeriod.equals("AM")) {
+							startDate = endDate;
+							startPeriod = endPeriod;
+							System.out.println(endPeriod);
+							
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+						else if( i > 0) {
+			
+							startDate = dateconvert.addADay(startDate);
+							startPeriod = "AM";
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+							startPeriod = "PM";
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+					}
+					
+					System.out.println("Number of Days in extended absence: " + ExtendedAbsence + "\n");
+					
 				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
 					absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
 				} else {	// invalid date input
