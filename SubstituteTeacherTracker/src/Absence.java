@@ -1,5 +1,5 @@
 
-public class Absence {
+public class Absence{
 	private Teacher teacher;
 	private String date;
 	private String period;
@@ -12,6 +12,24 @@ public class Absence {
 		this.date = date;
 		this.period = period;
 		this.school = school;
+		updateStatus();
+	}
+	
+	//ZAC: Logic to assign substitute to absence based on teacher-substitute compatibility.
+	//ZAC: May need a try/catch block for the case that subList is empty.
+	public void assignSub(SubList subList)
+	{
+		Sub assignedSub = null;
+		int largest = -1; //Lowest possible compatibility value is 0. This -1 ensures a substitute will be assigned, provided subList is not empty.
+		for(Sub sub: subList)
+		{
+			if(sub.compareTo(this.teacher)>largest)
+			{
+				assignedSub = sub;
+				largest = assignedSub.compareTo(this.teacher);
+			}
+		}
+		this.sub = assignedSub;
 		updateStatus();
 	}
 	
@@ -57,10 +75,10 @@ public class Absence {
 	public String toString() {
 		String str = "";
 		if(status.equalsIgnoreCase("UNASSIGNED")) {
-			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+			str += "\n\nABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
 				   "\nLocation: "+school.getName()+"\nStatus: "+status;
 		} else if(status.equalsIgnoreCase("ASSIGNED")) {
-			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+			str += "\n\nABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
 					   "\nLocation: "+school.getName()+"\nStatus: "+status+
 				   "\nAssigned substitute: "+sub.getName();
 		}

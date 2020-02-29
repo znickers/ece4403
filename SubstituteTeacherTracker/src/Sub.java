@@ -1,7 +1,7 @@
 
 import java.util.ArrayList;
 
-public class Sub {
+public class Sub implements Comparable<Teacher>{
 	private String name;
 	private ArrayList<String> teachables;
 	private SchoolList blacklist;
@@ -61,13 +61,25 @@ public class Sub {
 		blacklist.remove(school);
 	}
 	
+	public int compareTo(Teacher teacher)
+	{
+		int compatibility = 0; //ZAC: Integer value to represent teacher-substitute compatibility. Higher value represents better compatibility.
+		ArrayList<String> teacherTeachables = teacher.getTeachables();
+		for(String teachable: teacherTeachables)
+		{
+			if(teachables.contains(teachable))
+				compatibility++; //ZAC: If teacher and substitute share a common teachable, compatibility value will increase by 1.
+		}
+		return compatibility;
+	}
+	
 	// JO: need to test all toString cases
 	// JO: may need to update the unavailabilities if we make them a class later
 	public String toString() {
 		boolean first = true;
 		String str = "";
 		
-		str += "Substitute: "+name+"\nTeachables: ";
+		str += "\n\nSubstitute: "+name+"\nTeachables: ";
 		for(String t : teachables) {
 			if(first) {
 				str += t;

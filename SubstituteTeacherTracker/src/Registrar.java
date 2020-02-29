@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 
 public class Registrar {
 	
@@ -6,11 +5,27 @@ public class Registrar {
 	public static void main(String[] args) {
 		
 		// DEBUG: test code for CSVReader
-		AbsenceList al = CSVReader.readAbsences("data/absences.csv");
-		SubList sl = CSVReader.readSubstitutes("data/substitutes.csv");
+		AbsenceList aList = CSVReader.readAbsences("data/absences.csv");
+		SubList sList = CSVReader.readSubstitutes("data/substitutes.csv");
 		CSVReader.readPreferred("data/preferred.csv");
 		CSVReader.readOnCalls("data/oncalls.csv");
 		
+		//DEBUG: Test code for assigning substitutes to absences based on teacher-substitute teachable compatibility.
+		System.out.println("");
+		System.out.println(aList);
+		System.out.println("");
+		System.out.println(sList);
+		
+		for(Absence absence: aList)
+		{
+			absence.assignSub(sList);
+		}
+		
+		System.out.println("");
+		System.out.println(aList);
+		
+		
+		/*
 		// DEBUG: test code for Absence toString()
 		System.out.println();
 		int sub = 1;
@@ -53,7 +68,7 @@ public class Registrar {
 		System.out.println();
 		
 		// DEBUG: test code for Sub toString()
-		Sub s1 = new Sub("sub2",t);
+		Sub s2 = new Sub("sub2",t);
 		System.out.println(s1);
 		System.out.println();
 		
@@ -61,7 +76,8 @@ public class Registrar {
 		CSVWriter.writeAssignments("data/assignments.csv", al);
 		
 		// DEBUG: test code for incorrect filename
-//		CSVReader.readSubstitutes("myfile.csv");
-//		System.out.println("Test output after incorrect filename");
+		//CSVReader.readSubstitutes("myfile.csv");
+		//System.out.println("Test output after incorrect filename");
+		 */
 	}
 }
