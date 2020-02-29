@@ -2,7 +2,7 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Test {
+public class DateConverter {
 	
 	public int[] convertDate(int year, int month, int day) {
 		LocalDate date = LocalDate.of(year, month, day);
