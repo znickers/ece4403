@@ -126,4 +126,9 @@ public class SubList implements List<Sub> {
 	public <T> T[] toArray(T[] subs) {
 		return this.subs.toArray(subs);
 	}
+	
+	public String toString()
+	{
+		return subs.toString();
+	}
 }

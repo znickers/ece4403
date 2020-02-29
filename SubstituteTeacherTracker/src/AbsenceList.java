@@ -126,4 +126,9 @@ public class AbsenceList implements List<Absence> {
 	public <T> T[] toArray(T[] absences) {
 		return this.absences.toArray(absences);
 	}
+	
+	public String toString()
+	{
+		return absences.toString();
+	}
 }
