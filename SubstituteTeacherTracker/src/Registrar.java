@@ -32,7 +32,9 @@ public class Registrar {
 		System.out.println("AbsenceList:");
 		for(Absence ab : al) {
 			if(sub==1) {
-				ab.setSub(new Sub("Ned Shneebly",new ArrayList<String>()));
+				// ab.setSub(new Sub("Ned Shneebly",new ArrayList<String>()));
+				// SIE: pick a sub from the sub arrayList, make sure same sub cant be put into
+				ab.setSub(new AssignSub().getSub(sl, ab));
 			}
 			sub--;
 			System.out.println(ab);
