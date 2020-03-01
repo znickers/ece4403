@@ -95,7 +95,8 @@ public class CSVReader {
 	// TODO: finish reading on-call contracts
 	// DESC: read unavailabilities from unavailabilities.csv
 	public static void readUnavailabilities(String filename, SubList subList) {
-		Unavailability unavailability;
+		String unavailability;
+		
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
@@ -131,12 +132,14 @@ public class CSVReader {
 					System.out.println("Extended sub unavailabilities read.");
 				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
 					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
-					unavailability = new Unavailability(startDate+" "+startPeriod);
+					unavailability = startDate+" "+startPeriod;
 					for(Sub sub : subList) {
 						if(sub.getName().equalsIgnoreCase(subName)) {
-							sub.addUnavailability(unavailability);
-//							unavailability.setSub(sub);		// JO: might not need to do this. Only accessing Unavailabilities thru Subs
-							break;
+							ArrayList<String> ul = sub.getUnavailabilities();
+							if(!ul.contains(unavailability)) {
+								sub.addUnavailability(unavailability);
+								break;
+							}
 						}
 					}
 				} else {	// invalid date input

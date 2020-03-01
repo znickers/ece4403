@@ -7,7 +7,7 @@ public class Sub implements Comparable<Teacher>{
 	private SchoolList blacklist;
 	// JO: maybe separate class for unavailabilities like with Absences
 	// JO: can have UnavailabilityList also
-	private UnavailabilityList unavailabilities;
+	private ArrayList<String> unavailabilities;
 	private SchoolList schools;		// schools a Sub is assigned to
 	private AbsenceList assignedAbsences;	// absences a Sub is assigned to
 	
@@ -18,7 +18,7 @@ public class Sub implements Comparable<Teacher>{
 		this.name = name;
 		this.teachables = teachables;
 		this.blacklist = new SchoolList();
-		this.unavailabilities = new UnavailabilityList();
+		this.unavailabilities = new ArrayList<String>();
 		this.schools = new SchoolList();
 		this.assignedAbsences = new AbsenceList();
 	}
@@ -27,11 +27,11 @@ public class Sub implements Comparable<Teacher>{
 		this.blacklist = blacklist;
 	}
 	
-	public void addUnavailability(Unavailability unavailability) {
+	public void addUnavailability(String unavailability) {
 		unavailabilities.add(unavailability);
 	}
 	
-	public UnavailabilityList getUnavailabilities() {
+	public ArrayList<String> getUnavailabilities() {
 		return unavailabilities;
 	}
 	
@@ -94,7 +94,7 @@ public class Sub implements Comparable<Teacher>{
 		}
 		if(!unavailabilities.isEmpty()) {
 			str += "\nUnavailabilities:";
-			for(Unavailability u : unavailabilities) {
+			for(String u : unavailabilities) {
 				str += "\n"+u;
 			}
 		}

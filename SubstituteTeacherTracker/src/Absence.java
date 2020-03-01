@@ -1,5 +1,5 @@
 
-public class Absence{
+public class Absence {
 	private Teacher teacher;
 	private String date;
 	private String period;
@@ -57,11 +57,6 @@ public class Absence{
 	
 	public String getStatus() {
 		return status;
-	}
-	
-	public void setSub(Sub sub) {
-		this.sub = sub;
-		updateStatus();
 	}
 	
 	private void updateStatus() {
