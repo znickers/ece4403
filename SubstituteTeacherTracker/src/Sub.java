@@ -27,6 +27,11 @@ public class Sub implements Comparable<Teacher>{
 		this.blacklist = blacklist;
 	}
 	
+	public UnavailabilityList getUnavailabilities()
+	{
+		return unavailabilities;
+	}
+	
 	public void setUnavailabilities(UnavailabilityList unavailabilities) {
 		this.unavailabilities = unavailabilities;
 	}
@@ -59,6 +64,19 @@ public class Sub implements Comparable<Teacher>{
 	// JO: might need to catch exception
 	public void removeBlacklist(School school) {
 		blacklist.remove(school);
+	}
+	
+	public boolean checkConflict(String date)
+	{
+		for(Unavailability unavailability: getUnavailabilities())
+		{
+			if(date.equals(unavailability.getDate().substring(0,5)))
+				return true;
+		}
+		for(Absence absence: getAssignedAbsences())
+			if(date.equals(absence.getDate()))
+				return true;
+		return false;
 	}
 	
 	public int compareTo(Teacher teacher)

@@ -18,6 +18,7 @@ public class Registrar {
 		
 		for(Absence absence: aList)
 		{
+			System.out.println(absence.getDate());
 			absence.assignSub(sList);
 		}
 		
