@@ -16,9 +16,19 @@ public class Registrar {
 		System.out.println(absenceList);
 		System.out.println("");
 		System.out.println(subList);
+
 		System.out.println("");
 		CSVReader.readUnavailabilities("data/unavailabilities.csv", subList);
 		System.out.println(subList);
+		System.out.println("");
+		
+		System.out.println("Absence dates");
+		for(Absence absence: absenceList)
+		{
+			System.out.println(absence.getDate());
+			absence.assignSub(subList);
+		}
+		System.out.println("");
 		
 //		for(Absence absence: absenceList)
 //		{
