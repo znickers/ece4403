@@ -1,5 +1,5 @@
-name,blacklist,teachables
-Tony Liew,,science gym
-Rudi Hurnik,,reading writing biology
-John Deer,,english reading writing
-Jane Doe,,history reading writing
+name,teachables,blacklist
+Tony Liew,science gym,
+Rudi Hurnik,reading writing biology,
+John Deer,english reading writing,
+Jane Doe,history reading writing,

@@ -17,13 +17,26 @@ public class CSVReader {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			// DESC: parse thru entries in absences.csv
 			for (CSVRecord record : csvParser) {
-				String name = record.get("name");
-				String startDate = record.get("start_date");
-				String startPeriod = record.get("start_period");
-				String endDate = record.get("end_date");
-				String endPeriod = record.get("end_period");
-				String location = record.get("location");
-				String str_teachables = record.get("teachables");
+				String name = "";
+				String startDate = "";
+				String startPeriod = "";
+				String endDate = "";
+				String endPeriod = "";
+				String location = "";
+				String str_teachables = "";
+				try {
+					name = record.get("name");
+					startDate = record.get("start_date");
+					startPeriod = record.get("start_period");
+					endDate = record.get("end_date");
+					endPeriod = record.get("end_period");
+					location = record.get("location");
+					str_teachables = record.get("teachables");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in absences.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(101);
+				}
 				
 				// DEBUG: output csvParser results
 				System.out.println("Absence Record: "+name+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod+" | "+location+" | "+str_teachables);
@@ -52,8 +65,8 @@ public class CSVReader {
 			csvParser.close();
 		} catch(IOException ioe) {
 			System.out.println("Unable to find absences.csv");
-			ioe.printStackTrace();
-			System.exit(10);		// JO: close program if file not found, could find more elegant method to handle this
+			System.out.println(ioe.getMessage());
+			System.exit(100);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 		return absenceList;
 	}
@@ -67,12 +80,21 @@ public class CSVReader {
 			
 			// DESC: parse thru entries in substitutes.csv
 			for (CSVRecord record : csvParser) {
-				String name = record.get("name");
-				String blacklist = record.get("blacklist");
-				String str_teachables = record.get("teachables");
+				String name = "";
+				String str_teachables = "";
+				String blacklist = "";
+				try {
+					name = record.get("name");
+					str_teachables = record.get("teachables");
+					blacklist = record.get("blacklist");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in substitutes.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(111);
+				}
 				
 				// DEBUG: output csvParser results
-				System.out.println("Substitute Record: "+name+" | "+blacklist+" | "+str_teachables);
+				System.out.println("Substitute Record: "+name+" | "+str_teachables+" | "+blacklist);
 
 				// TODO: create a substitute
 				ArrayList<String> al_teachables = new ArrayList<String>();
@@ -86,8 +108,8 @@ public class CSVReader {
 			csvParser.close();
 		} catch(IOException ioe) {
 			System.out.println("Unable to find substitutes.csv");
-			ioe.printStackTrace();
-			System.exit(11);		// JO: close program if file not found, could find more elegant method to handle this
+			System.out.println(ioe.getMessage());
+			System.exit(110);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 		return subList;
 	}
@@ -166,8 +188,16 @@ public class CSVReader {
 			
 			// DESC: parse thru entries in preferred.csv
 			for (CSVRecord record : csvParser) {
-				String teacherName = record.get("teacher");
-				String subName = record.get("preferred substitute");
+				String teacherName = "";
+				String subName = "";
+				try {
+					teacherName = record.get("teacher");
+					subName = record.get("preferred substitute");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in preferred.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(131);
+				}
 				
 				// DEBUG: output csvParser results
 				System.out.println("Preferred Record: "+teacherName+" | "+subName);
@@ -178,7 +208,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find preferred.csv");
 			ioe.printStackTrace();
-			System.exit(13);		// JO: close program if file not found, could find more elegant method to handle this
+			System.exit(130);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 	
@@ -190,8 +220,16 @@ public class CSVReader {
 			
 			// DESC: parse thru entries in oncalls.csv
 			for (CSVRecord record : csvParser) {
-				String subName = record.get("substitute");
-				String location = record.get("on-call contract location");
+				String subName = "";
+				String location = "";
+				try {
+					subName = record.get("substitute");
+					location = record.get("on-call contract location");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in oncalls.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(141);
+				}
 				
 				// DEBUG: output csvParser results
 				System.out.println("On-Call Record: "+subName+" | "+location);
@@ -202,7 +240,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find oncalls.csv");
 			ioe.printStackTrace();
-			System.exit(14);		// JO: close program if file not found, could find more elegant method to handle this
+			System.exit(140);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 }

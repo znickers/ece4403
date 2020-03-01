@@ -13,7 +13,7 @@ public class Registrar {
 		
 		//DEBUG: Test code for assigning substitutes to absences based on teacher-substitute teachable compatibility.
 		System.out.println("");
-		//System.out.println(absenceList);
+		System.out.println(absenceList);
 		System.out.println("");
 		System.out.println(subList);
 		System.out.println("");
