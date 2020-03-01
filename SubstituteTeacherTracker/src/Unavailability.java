@@ -4,13 +4,16 @@ public class Unavailability {
 	private Sub sub;
 	private String date;
 	
-	public Unavailability(Sub sub, String date) {
-		this.sub = sub;
+	public Unavailability(String date) {
 		this.date = date;
 	}
 	
 	public Sub getSub() {
 		return sub;
+	}
+	
+	public void setSub(Sub sub) {
+		this.sub = sub;
 	}
 	
 	public String getDate() {

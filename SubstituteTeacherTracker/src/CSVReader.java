@@ -94,17 +94,29 @@ public class CSVReader {
 	
 	// TODO: finish reading on-call contracts
 	// DESC: read unavailabilities from unavailabilities.csv
-	public static void readUnavailabilities(String filename) {
+	public static void readUnavailabilities(String filename, SubList subList) {
+		Unavailability unavailability;
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
 			// DESC: parse thru entries in unavailabilities.csv
 			for (CSVRecord record : csvParser) {
-				String subName = record.get("substitute");
-				String startDate = record.get("start_date");
-				String startPeriod = record.get("start_period");
-				String endDate = record.get("end_date");
-				String endPeriod = record.get("end_period");
+				String subName = "";
+				String startDate = "";
+				String startPeriod = "";
+				String endDate = "";
+				String endPeriod = "";
+				try {
+					subName = record.get("substitute_name");
+					startDate = record.get("start_date");
+					startPeriod = record.get("start_period");
+					endDate = record.get("end_date");
+					endPeriod = record.get("end_period");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in unavailabilities.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(121);
+				}
 				
 				// DEBUG: output csvParser results
 				System.out.println("Unavailability Record: "+subName+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod);
@@ -112,32 +124,34 @@ public class CSVReader {
 				// TODO: assign unavailabilities to Sub
 				
 				// JO: REFACTOR into readUnavailabilities
-//				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
-//					// TODO: generate individual unavailabilities and add to an unavailabilitiesList
-//					
-//					// TEMP: reminder println to implement feature
-//					System.out.println("Extended sub unavailabilities read.");
-//				} else if((startDate+startPeriod+endDate+endPeriod).equals("")) {
-//					subList.add(sub);
-//				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
-////					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
-//					UnavailabilityList ul = new UnavailabilityList();
-//					ul.add(new Unavailability(sub,startDate+" "+startPeriod));
-//					sub.setUnavailabilities(ul);
-//					subList.add(sub);
-//				} else {	// invalid date input
-//					// JO: thought this should be considered, could assume all dates are input correctly
-//					// JO: cases - startDate happens after endDate, incorrect format, incorrect entry
-//					
-//					// TODO: handle invalid inputs
-//					System.out.println("Invalid sub unavailability date entered.");
-//				}
+				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
+					// TODO: generate individual unavailabilities and add to an unavailabilitiesList
+					
+					// TEMP: reminder println to implement feature
+					System.out.println("Extended sub unavailabilities read.");
+				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
+					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
+					unavailability = new Unavailability(startDate+" "+startPeriod);
+					for(Sub sub : subList) {
+						if(sub.getName().equalsIgnoreCase(subName)) {
+							sub.addUnavailability(unavailability);
+//							unavailability.setSub(sub);		// JO: might not need to do this. Only accessing Unavailabilities thru Subs
+							break;
+						}
+					}
+				} else {	// invalid date input
+					// JO: thought this should be considered, could assume all dates are input correctly
+					// JO: cases - startDate happens after endDate, incorrect format, incorrect entry
+					
+					// TODO: handle invalid inputs
+					System.out.println("Invalid sub unavailability date entered.");
+				}
 			}
 			csvParser.close();
 		} catch(IOException ioe) {
-			System.out.println("Unable to find unavailabilities.csv");
-			ioe.printStackTrace();
-			System.exit(12);		// JO: close program if file not found, could find more elegant method to handle this
+			System.out.println("EXCEPTION: Unable to find unavailabilities.csv");
+			System.out.println(ioe.getMessage());
+			System.exit(120);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 	

@@ -27,8 +27,12 @@ public class Sub implements Comparable<Teacher>{
 		this.blacklist = blacklist;
 	}
 	
-	public void setUnavailabilities(UnavailabilityList unavailabilities) {
-		this.unavailabilities = unavailabilities;
+	public void addUnavailability(Unavailability unavailability) {
+		unavailabilities.add(unavailability);
+	}
+	
+	public UnavailabilityList getUnavailabilities() {
+		return unavailabilities;
 	}
 	
 	public String getName() {

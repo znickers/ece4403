@@ -1,4 +1,4 @@
-substitute name,start_date,start_period,end_date,end_period
-Rudi Hurnik,31-Oct-2020,PM,31-Oct-2020,PM
+substitute_name,start_date,start_period,end_date,end_period
+Rudi Hurnik,30-Oct-2020,PM,30-Oct-2020,PM
 Rudi Hurnik,25-Dec-2020,AM,25-Dec-2020,AM
 Tony Liew,2-Mar-2020,PM,2-Mar-2020,PM
