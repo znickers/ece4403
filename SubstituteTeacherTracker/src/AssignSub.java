@@ -22,10 +22,11 @@ public class AssignSub {
 	}
 		
 	// SIE: select a random sub (based on index)
-	public Sub randomSub(SubList sl) {
-		Random randomSub = new Random();
-		Sub rSub = sl.get(randomSub.nextInt(sl.size()));
-		return rSub;
+	// JO: set to private as it seemed like a helper method
+	private Sub randomSub(SubList sl) {
+		Random random = new Random();
+		Sub randomSub = sl.get(random.nextInt(sl.size()));
+		return randomSub;
 	}
     
 	// take sub out of list so that they cant be assigned twice
@@ -55,9 +56,11 @@ public class AssignSub {
 	// for the first grouping of absences on the same day. Does not work when
 	// there are more absences than subs, or when there are multiple absences 
 	// in a day
-    public Sub getSub(SubList sl, Absence ab) 
+    public Sub assignSub(SubList sl, Absence ab) 
     { 	
        	Sub assignedSub;
+       	
+       	
        	
        	if(checkDate(ab) == 0) {
     		assignedSub = randomSub(checkSub(sl));
