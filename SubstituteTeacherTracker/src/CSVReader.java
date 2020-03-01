@@ -63,6 +63,12 @@ public class CSVReader {
 						else if( i > 0) {
 			
 							startDate = dateconvert.addADay(startDate);
+							int[] CurrentDay = dateconvert.convertDateString(startDate);
+							
+							if(CurrentDay[1] == 1 || CurrentDay[1] == 7) {
+								continue;
+							}
+							
 							startPeriod = "AM";
 							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
 							startPeriod = "PM";
