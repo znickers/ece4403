@@ -1,77 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.2">
-  <zoom_level>11</zoom_level>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>6</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2178</x>
-      <y>682</y>
-      <w>330</w>
-      <h>385</h>
+      <x>726</x>
+      <y>642</y>
+      <w>264</w>
+      <h>216</h>
     </coordinates>
     <panel_attributes>Teacher
 --
 -name: String
 -school: School
 -teachables: ArrayList&lt;String&gt;
--absences: ArrayList&lt;Absence&gt;
--recurring: ArrayList&lt;String&gt;
--preferred: Sub
+-absences: AbsenceList
+-preferredSub: Sub
 --
-+Teacher(String name)
++Teacher(String name, School school, ArrayList&lt;String&gt; teachables)
 +getName(): String
 +getStatus(): String
 +getTeachables(): ArrayList&lt;String&gt;
-+getRegular(): Sub
++getPreferredSub(): Sub
 +setName(String name): void
 +setLocation(String location): void
 +setStatus(Sting status): void
 +setTeachables(ArrayList&lt;String&gt;): void
-+setAbsences(ArrayList&lt;Absence&gt;): void
-+setPreferred(Sub regular): void
++setAbsences(AbsenceList): void
++setPreferredSub(Sub preferredSub): void
 +addTeachable(String teachable): void
 +addAbsence(Absence absence): void
++addAbsenceList(AbsenceList absences): void
++toString(): String
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2178</x>
-      <y>253</y>
-      <w>330</w>
-      <h>363</h>
+      <x>1044</x>
+      <y>498</y>
+      <w>228</w>
+      <h>246</h>
     </coordinates>
     <panel_attributes>Sub
 --
 -name: String
--location: String
--status: String
 -teachables: ArrayList&lt;String&gt;
--blacklist: ArrayList&lt;School&gt;
--unavailabilities: ArrayList&lt;String&gt;
--recurring: ArrayList&lt;String&gt;
+-blacklist: SchoolList
+-unavailabilities: UnavailabilityList
+-schools: SchoolList
+-assignedAbsences: AbsenceList
 --
-+Sub(String name, String location)
++Sub(String name, ArrayList&lt;String&gt; teachables)
 +getName(): String
-+getLocation(): String
 +getTeachables(): ArrayList&lt;String&gt;
++getUnavailabilities(): UnavailabilityList
++setBlacklist(SchoolList blacklist): void
 +setName(String name): void
 +setLocation(String location): void
 +setTeachables(ArrayList&lt;String&gt;): void
++setUnavailabilities(UnavailabilityList unavailabilities): void
 +addTeachable(String teachable): void
 +addUnavailability(String date): void
 +addBlacklist(String schoolname): void
-+removeBlacklist(String schoolname): void</panel_attributes>
++removeBlacklist(String schoolname): void
++assignAbsence(Absence absence): void
++checkConflict(String date): boolean
++compareTo(Teacher teacher): int
++toString(): String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>671</x>
-      <y>407</y>
-      <w>209</w>
-      <h>55</h>
+      <x>30</x>
+      <y>462</y>
+      <w>114</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>Registrar
 --
@@ -91,22 +97,21 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2178</x>
-      <y>0</y>
-      <w>330</w>
-      <h>187</h>
+      <x>1116</x>
+      <y>366</y>
+      <w>180</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>School
 --
 -name: String
--location: String
--teachers: ArrayList&lt;Teacher&gt;
+-teachers: TeacherList
 --
-+School(String name, String location)
++School(String name)
 +getName(): String
-+getLocation(): String
 +addTeacher(Teacher teacher): void
 +removeTeacher(String name): void
++toString: String
 
 
 </panel_attributes>
@@ -115,40 +120,14 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>308</x>
-      <y>1529</y>
-      <w>297</w>
-      <h>231</h>
-    </coordinates>
-    <panel_attributes>Absence
---
--teacher: Teacher
--sub: Sub
--period: String
--status: String
---
-+Absence(String period, Teacher teacher)
-+getTeacher(): Teacher
-+getSub(): Sub
-+getDate(): String
-+getStatus(): String
-+setSub(): Sub
-+setStatus(): String
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>858</x>
-      <y>550</y>
-      <w>330</w>
-      <h>154</h>
+      <x>132</x>
+      <y>540</y>
+      <w>180</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>CSVReader
 --
-
+_-csvParser: CSVParser_
 --
 +readSubstitutes(String filename): void
 +readAbsences(String filename): void
@@ -160,91 +139,90 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>847</x>
-      <y>759</y>
-      <w>374</w>
-      <h>88</h>
+      <x>120</x>
+      <y>726</y>
+      <w>204</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>CSVWriter
 --
-
+_-csvPrinter: CSVPrinter_
 --
-+writeAssignment(Absence absence, Sub sub): void
++writeAssignments(Absence absence, Sub sub): void
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1463</x>
-      <y>385</y>
-      <w>297</w>
-      <h>99</h>
+      <x>684</x>
+      <y>450</y>
+      <w>162</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>SubList
 --
--subs: ArrayList&lt;Sub&gt;
+-subs: ArrayList&lt;Absence&gt;
 --
-+addSub(Sub substitute): void
-+removeSub(String name): void</panel_attributes>
++SubList()
++toString: String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1463</x>
-      <y>253</y>
-      <w>297</w>
-      <h>99</h>
+      <x>798</x>
+      <y>378</y>
+      <w>162</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>SchoolList
 --
--schools: ArrayList&lt;School&gt;
+-schools: ArrayList&lt;Absence&gt;
 --
-+addSchool(School school): void
-+removeSchool(String name): void</panel_attributes>
++SchoolList()
++toString: String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>264</x>
-      <y>1364</y>
-      <w>374</w>
-      <h>110</h>
+      <x>444</x>
+      <y>594</y>
+      <w>204</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>AbsenceList
 --
 -absences: ArrayList&lt;Absence&gt;
 --
-+addAbsence(Absnece absence): void
-+removeAbsence(Absence absence): void
-+removeAbsence(Teacher teacher, String date): void</panel_attributes>
++AbsenceList()
++toString: String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1463</x>
-      <y>517</y>
-      <w>297</w>
-      <h>99</h>
+      <x>570</x>
+      <y>522</y>
+      <w>162</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>TeacherList
 --
 -teachers: ArrayList&lt;Teacher&gt;
 --
-+addTeacher(Teacher teacher): void
-+removeTeacher(String name): void</panel_attributes>
++TeacherList()
++toString: String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>770</x>
-      <y>451</y>
-      <w>110</w>
-      <h>198</h>
+      <x>84</x>
+      <y>486</y>
+      <w>60</w>
+      <h>108</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>80.0;160.0;10.0;160.0;10.0;10.0</additional_attributes>
@@ -252,98 +230,54 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>770</x>
-      <y>616</y>
-      <w>99</w>
-      <h>209</h>
+      <x>84</x>
+      <y>576</y>
+      <w>48</w>
+      <h>186</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>70.0;170.0;10.0;170.0;10.0;10.0</additional_attributes>
+    <additional_attributes>60.0;290.0;10.0;290.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>869</x>
-      <y>429</y>
-      <w>616</w>
-      <h>33</h>
+      <x>138</x>
+      <y>474</y>
+      <w>558</w>
+      <h>18</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>540.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>910.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1375</x>
-      <y>297</y>
-      <w>110</w>
-      <h>165</h>
+      <x>414</x>
+      <y>402</y>
+      <w>396</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>80.0;10.0;10.0;10.0;10.0;130.0</additional_attributes>
+    <additional_attributes>640.0;10.0;10.0;10.0;10.0;130.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1375</x>
-      <y>429</y>
-      <w>110</w>
-      <h>165</h>
+      <x>414</x>
+      <y>474</y>
+      <w>168</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>80.0;130.0;10.0;130.0;10.0;10.0</additional_attributes>
+    <additional_attributes>260.0;130.0;10.0;130.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1749</x>
-      <y>88</y>
-      <w>451</w>
-      <h>242</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>390.0;10.0;120.0;200.0;10.0;200.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1749</x>
-      <y>429</y>
-      <w>451</w>
-      <h>33</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>390.0;10.0;120.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1749</x>
-      <y>561</y>
-      <w>451</w>
-      <h>341</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>390.0;290.0;120.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>440</x>
-      <y>1463</y>
-      <w>33</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1177</x>
-      <y>429</y>
-      <w>132</w>
-      <h>220</h>
+      <x>306</x>
+      <y>474</y>
+      <w>72</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;10.0;100.0;180.0;10.0;180.0</additional_attributes>
@@ -351,129 +285,291 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>220</x>
-      <y>935</y>
-      <w>484</w>
-      <h>99</h>
+      <x>132</x>
+      <y>654</y>
+      <w>180</w>
+      <h>42</h>
     </coordinates>
-    <panel_attributes>Calendar
---
--weeks: ArrayList&lt;Week&gt;
---
-+Calendar(String startday)
-+addAbsence(int week, int day, String period, Teacher teacher): void</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>341</x>
-      <y>1089</y>
-      <w>220</w>
-      <h>66</h>
-    </coordinates>
-    <panel_attributes>Week
---
--days: ArrayList&lt;Day&gt;
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>308</x>
-      <y>1210</y>
-      <w>275</w>
-      <h>99</h>
-    </coordinates>
-    <panel_attributes>Day
---
--dayofweek: String
--date: String
--absences: AbsenceList
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>440</x>
-      <y>1023</y>
-      <w>33</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>440</x>
-      <y>1144</y>
-      <w>33</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>440</x>
-      <y>1298</y>
-      <w>33</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>440</x>
-      <y>429</y>
-      <w>253</w>
-      <h>528</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;460.0;10.0;10.0;210.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1166</x>
-      <y>616</y>
-      <w>143</w>
-      <h>374</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;320.0;110.0;320.0;110.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>913</x>
-      <y>935</y>
-      <w>264</w>
-      <h>77</h>
-    </coordinates>
-    <panel_attributes>ConvertDate
+    <panel_attributes>DateConverter
 --
 
---</panel_attributes>
+--
++convertDate(int year, int month, int day): int[]</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>693</x>
-      <y>957</y>
-      <w>242</w>
-      <h>33</h>
+      <x>414</x>
+      <y>546</y>
+      <w>42</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;200.0;10.0</additional_attributes>
+    <additional_attributes>50.0;140.0;10.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>216</x>
+      <y>618</y>
+      <w>18</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>414</x>
+      <y>720</y>
+      <w>270</w>
+      <h>198</h>
+    </coordinates>
+    <panel_attributes>Absence
+--
+-teacher: Teacher
+-date: String
+-period: String
+-school: School
+-sub: Sub
+-status: String
+--
++Absence(Teacher teacher, String date, String period, School school)
++assignSub(SubList subList): void
++getDate(): String
++getPeriod(): String
++getTeacher(): Teacher
++getSchool(): School
++getSub(): Sub
++getStatus(): String
++setSub(): void
++setStatus(): String
++updateStatus(): void
++toString(): String
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>660</x>
+      <y>0</y>
+      <w>216</w>
+      <h>246</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+List&lt;E&gt;
+--
+
+--
++add(E element): boolean
++add(int index, E element): void
++addAll(Collection&lt;? extends E&gt; elements): boolean
++addAll(int index, Collection&lt;? extends E&gt; elements): boolean
++clear(): void
++contains(Object element): boolean
++containsAll(Collection&lt;?&gt; elements): boolean
++get(int index): E
++indexOf(Object element): int
++isEmpty(): boolean
++iterator(): Iterator&lt;E&gt;
++lastIndexOf(Object element): int
++listIterator(): ListIterator&lt;E&gt;
++remove(Object element): boolean
++remove(int index): E
++removeAll(Collection&lt;?&gt; elements): boolean
++retainAll(Collection&lt;?&gt; elements): boolean
++set(int index, E element): E
++size(): int
++subList(int fromIndex, in toIndex): List&lt;E&gt;
++toArray(): Object[]
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>912</x>
+      <y>306</y>
+      <w>162</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>UnavailabilityList
+--
+-unavailabilities: ArrayList&lt;Unavailability&gt;
+--
++UnavailabilityList()
++toString: String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>414</x>
+      <y>960</y>
+      <w>270</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>SubAssigner
+--
+-assignedSub: Sub
+--
++assignByTeachables(SubList sublist, Teacher teacher, String date)
++assignRandom(SubList sublist, Teacher teacher, String date)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>546</x>
+      <y>912</y>
+      <w>18</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1128</x>
+      <y>210</y>
+      <w>156</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>Unavailability
+--
+-sub: Sub
+-date: String
+--
++Unavailability(Sub sub, String date)
++getSub(): Sub
++getDate(): String
++toString(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>414</x>
+      <y>330</y>
+      <w>510</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>830.0;10.0;10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>642</x>
+      <y>240</y>
+      <w>114</w>
+      <h>294</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>170.0;10.0;170.0;80.0;10.0;80.0;10.0;470.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>756</x>
+      <y>240</y>
+      <w>18</w>
+      <h>222</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;350.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>774</x>
+      <y>240</y>
+      <w>114</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0;170.0;80.0;170.0;230.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>792</x>
+      <y>240</y>
+      <w>210</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0;330.0;50.0;330.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>540</x>
+      <y>240</y>
+      <w>198</w>
+      <h>366</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>310.0;10.0;310.0;50.0;10.0;50.0;10.0;590.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1068</x>
+      <y>288</y>
+      <w>156</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>240.0;10.0;240.0;80.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>954</x>
+      <y>402</y>
+      <w>174</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>270.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>474</y>
+      <w>216</w>
+      <h>132</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>340.0;200.0;160.0;200.0;160.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>726</x>
+      <y>546</y>
+      <w>138</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>210.0;160.0;210.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>540</x>
+      <y>642</y>
+      <w>18</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>
