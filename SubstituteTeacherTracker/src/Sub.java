@@ -5,10 +5,9 @@ public class Sub implements Comparable<Teacher>{
 	private String name;
 	private ArrayList<String> teachables;
 	private SchoolList blacklist;
-	// JO: maybe separate class for unavailabilities like with Absences
-	// JO: can have UnavailabilityList also
 	private UnavailabilityList unavailabilities;
-	private SchoolList schools;		// schools a Sub is assigned to
+	private SchoolList onCallLocations;
+	private SchoolList assignedSchools;		// schools a Sub is assigned to
 	private AbsenceList assignedAbsences;	// absences a Sub is assigned to
 	
 	// JO: I had a bunch of constructors for different Sub inputs, but decided to simplify a bit
@@ -19,7 +18,8 @@ public class Sub implements Comparable<Teacher>{
 		this.teachables = teachables;
 		this.blacklist = new SchoolList();
 		this.unavailabilities = new UnavailabilityList();
-		this.schools = new SchoolList();
+		this.onCallLocations = new SchoolList();
+		this.assignedSchools = new SchoolList();
 		this.assignedAbsences = new AbsenceList();
 	}
 	
@@ -43,13 +43,21 @@ public class Sub implements Comparable<Teacher>{
 		this.unavailabilities = unavailabilities;
 	}
 	
+	public void setOnCallLocations(SchoolList onCallLocations) {
+		this.onCallLocations = onCallLocations;
+	}
+	
+	public SchoolList getOnCallLocations() {
+		return onCallLocations;
+	}
+	
 	public String getName() {
 		return name;
 	}
 	
 	// JO: changed to return SchoolList since a Sub may be assigned to multiple schools throughout the year
 	public SchoolList getSchools() {
-		return schools;
+		return assignedSchools;
 	}
 	
 	public ArrayList<String> getTeachables() {
@@ -65,7 +73,7 @@ public class Sub implements Comparable<Teacher>{
 	}
 	
 	public void addSchool(School school) {
-		schools.add(school);
+		assignedSchools.add(school);
 	}
 	
 	// JO: might need to catch exception
@@ -111,6 +119,18 @@ public class Sub implements Comparable<Teacher>{
 				first = false;
 			} else {
 				str += ", "+t;
+			}
+		}
+		if(!onCallLocations.isEmpty()) {
+			first = true;
+			str += "\nOn-Call Locations:";
+			for(School school : onCallLocations) {
+				if(first) {
+					str += school.getName();
+					first = false;
+				} else {
+					str += ", "+school.getName();
+				}
 			}
 		}
 		if(!unavailabilities.isEmpty()) {

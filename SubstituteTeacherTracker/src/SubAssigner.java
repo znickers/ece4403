@@ -21,21 +21,21 @@ public class SubAssigner
 				available = checkAssignmentConflict(absence,sub);
 				if(!available) {
 					System.out.println("DEBUG: Previous assignment date conflicts with absence date.");
-					break;
+					continue;
 				}
 				
 				// TODO: check unavailabilities for conflicts
 				available = checkUnavailabilityConflict(absence,sub);
 				if(!available) {
 					System.out.println("DEBUG: Sub unavailability date conflicts with absence date.");
-					break;
+					continue;
 				}
 				
 				// TODO: check blacklist for conflicts
 				available = checkBlacklistConflict(absence,sub);
 				if(!available) {
 					System.out.println("DEBUG: Sub school blacklist conflicts with absence location.");
-					break;
+					continue;
 				}
 				
 				// TODO: check half-day for conflicts
@@ -66,7 +66,11 @@ public class SubAssigner
 			// JO: also not worth checking until a Sub has been assigned an Absence
 			
 			// TODO: assign based on on-call
-//			availableSubs = assignByOnCall(absence,availableSubs);
+			availableSubs = assignByOnCall(absence,availableSubs);
+			if(availableSubs.size() == 1) {
+				absence.setSub(availableSubs.get(0));
+				continue;
+			}
 			
 			// TODO: assign based on preferred
 //			assigned = assignByPreferred(absence,availableSubs);
@@ -124,6 +128,24 @@ public class SubAssigner
 			}
 		}
 		return available;
+	}
+	
+	private SubList assignByOnCall(Absence absence, SubList subList) {
+		SubList suitableSubs = new SubList();
+		
+		for(Sub sub : subList) {
+			SchoolList onCallList = sub.getOnCallLocations();
+			for(School onCall : onCallList) {
+				if(onCall.getName().equalsIgnoreCase(absence.getSchool().getName())) {
+					suitableSubs.add(sub);
+				}
+			}
+		}
+		if(suitableSubs.isEmpty()) {
+			suitableSubs = subList;
+		}
+		
+		return suitableSubs;
 	}
 	
 	private SubList assignByTeachables(Absence absence, SubList subList)

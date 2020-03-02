@@ -41,6 +41,8 @@ public class DateConverter {
 		Calendar cal = Calendar.getInstance();
 		
 		try {
+			// BUG: ParseException - 'Unparseable date: "06-Sep-2020"'
+			// JO: this works on my laptop but doesn't work on the computers in the lab for some reason
 			cal.setTime(dateFormat.parse(OldDate));
 		}
 		catch(ParseException pe){

@@ -8,8 +8,9 @@ public class Registrar {
 		// DEBUG: test code for CSVReader
 		AbsenceList absenceList = CSVReader.readAbsences("data/absences.csv");
 		SubList subList = CSVReader.readSubstitutes("data/substitutes.csv");
+		CSVReader.readUnavailabilities("data/unavailabilities.csv",subList);
+		CSVReader.readOnCalls("data/oncalls.csv",subList);
 		CSVReader.readPreferred("data/preferred.csv");
-		CSVReader.readOnCalls("data/oncalls.csv");
 		
 		//DEBUG: Test code for assigning substitutes to absences based on teacher-substitute teachable compatibility.
 		System.out.println();
@@ -18,7 +19,6 @@ public class Registrar {
 //		System.out.println(subList);
 
 		System.out.println();
-		CSVReader.readUnavailabilities("data/unavailabilities.csv", subList);
 		System.out.println(subList);
 		System.out.println();
 		

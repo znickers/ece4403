@@ -122,8 +122,6 @@ public class CSVReader {
 	// TODO: finish reading on-call contracts
 	// DESC: read unavailabilities from unavailabilities.csv
 	public static void readUnavailabilities(String filename, SubList subList) {
-		Unavailability unavailability;
-		
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
@@ -173,8 +171,7 @@ public class CSVReader {
 				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
 					System.out.println("DEBUG - Single sub unavailability read.");		// DEBUG: println statement
 					
-					unavailability = new Unavailability(startDate,startPeriod);
-					UnavailabilityList ul = unSub.getUnavailabilities();
+					Unavailability unavailability = new Unavailability(startDate,startPeriod);
 					boolean duplicate = checkDuplicateUnavailability(unSub,startDate,startPeriod);
 					if(!duplicate) {
 						unSub.addUnavailability(unavailability);
@@ -229,7 +226,7 @@ public class CSVReader {
 	
 	// TODO: finish reading on-call contracts
 	// DESC: read on-call contracts from oncalls.csv
-	public static void readOnCalls(String filename) {
+	public static void readOnCalls(String filename, SubList subList) {
 		try {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			
@@ -250,6 +247,28 @@ public class CSVReader {
 				System.out.println("On-Call Record: "+subName+" | "+location);
 				
 				// TODO: assign on-call contract to Sub
+				Sub onCallSub = new Sub("",new ArrayList<String>());
+				for(Sub sub : subList) {
+					if(sub.getName().equalsIgnoreCase(subName)) {
+						onCallSub = sub;
+					}
+				}
+				if(onCallSub.getName().equalsIgnoreCase("")) {
+					System.out.println("No Sub in system with name '"+subName+"' to assign blacklist to.");
+					continue;
+				}
+				
+				SchoolList onCallLocations = new SchoolList();
+				ArrayList<String> al_onCall = new ArrayList<String>();
+				al_onCall.addAll(Arrays.asList(location.split("/")));
+				for(String contract : al_onCall) {
+					onCallLocations.add(new School(contract));
+				}
+				
+				boolean duplicate = checkDuplicateOnCallLocation(onCallSub,location);
+				if(!duplicate) {
+					onCallSub.setOnCallLocations(onCallLocations);
+				}
 			}
 			csvParser.close();
 		} catch(IOException ioe) {
@@ -366,9 +385,22 @@ public class CSVReader {
 	// DESC: checks for an existing Unavailability in a Sub's unavailabilities at a given a date
 	private static boolean checkDuplicateUnavailability(Sub sub,String startDate,String startPeriod) {
 		boolean duplicate = false;				// prevent duplicate unavailabilities from being assigned
-		UnavailabilityList ul = sub.getUnavailabilities();
-		for(int i=0;i<ul.size();i++) {
-			if(ul.get(i).getDate().equalsIgnoreCase(startDate) && ul.get(i).getPeriod().equalsIgnoreCase(startPeriod)) {
+		UnavailabilityList unList = sub.getUnavailabilities();
+		for(int i=0;i<unList.size();i++) {
+			if(unList.get(i).getDate().equalsIgnoreCase(startDate) && unList.get(i).getPeriod().equalsIgnoreCase(startPeriod)) {
+				duplicate = true;
+				break;
+			}
+		}
+		return duplicate;
+	}
+	
+	// DESC: checks for an existing on-call contract with a Sub a given a location
+	private static boolean checkDuplicateOnCallLocation(Sub sub,String location) {
+		boolean duplicate = false;				// prevent duplicate unavailabilities from being assigned
+		SchoolList onCallList = sub.getOnCallLocations();
+		for(int i=0;i<onCallList.size();i++) {
+			if(onCallList.get(i).getName().equalsIgnoreCase(location)) {
 				duplicate = true;
 				break;
 			}
