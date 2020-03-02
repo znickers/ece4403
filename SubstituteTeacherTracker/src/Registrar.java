@@ -91,6 +91,5 @@ public class Registrar {
 //		// DEBUG: test code for incorrect filename
 //		//CSVReader.readSubstitutes("myfile.csv");
 //		//System.out.println("Test output after incorrect filename");
-		
 	}
 }
