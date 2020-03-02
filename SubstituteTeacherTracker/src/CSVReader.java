@@ -17,13 +17,26 @@ public class CSVReader {
 			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
 			// DESC: parse thru entries in absences.csv
 			for (CSVRecord record : csvParser) {
-				String name = record.get("name");
-				String startDate = record.get("start_date");
-				String startPeriod = record.get("start_period");
-				String endDate = record.get("end_date");
-				String endPeriod = record.get("end_period");
-				String location = record.get("location");
-				String str_teachables = record.get("teachables");
+				String name = "";
+				String startDate = "";
+				String startPeriod = "";
+				String endDate = "";
+				String endPeriod = "";
+				String location = "";
+				String str_teachables = "";
+				try {
+					name = record.get("name");
+					startDate = record.get("start_date");
+					startPeriod = record.get("start_period");
+					endDate = record.get("end_date");
+					endPeriod = record.get("end_period");
+					location = record.get("location");
+					str_teachables = record.get("teachables");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in absences.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(101);
+				}
 				
 				// DEBUG: output csvParser results
 				System.out.println("Absence Record: "+name+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod+" | "+location+" | "+str_teachables);
@@ -38,7 +51,48 @@ public class CSVReader {
 					// TODO: generate individual absences and add to the absenceList
 					
 					// TEMP: reminder println to implement feature
-					System.out.println("Extended absence read.");
+					System.out.println("\nExtended absence read.");
+					
+					DateConverter dateconvert = new DateConverter();
+					int[] ISOStart = dateconvert.convertDateString(startDate);
+					int[] ISOEnd = dateconvert.convertDateString(endDate);
+					
+					int ExtendedAbsence = ((ISOEnd[0] - ISOStart[0])*7) + (ISOEnd[1] - ISOStart[1] +1);
+					
+					for(int i = 0; i < ExtendedAbsence; i++) {
+						if((i == 0) && (startPeriod.equals("PM"))){
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+						else if((i == 0) && (startPeriod.equals("AM"))) {
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+							startPeriod = "PM";
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+						else if((i == (ExtendedAbsence - 1)) && endPeriod.equals("AM")) {
+							startDate = endDate;
+							startPeriod = endPeriod;
+							System.out.println(endPeriod);
+							
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+						else if( i > 0) {
+			
+							startDate = dateconvert.addADay(startDate);
+							int[] CurrentDay = dateconvert.convertDateString(startDate);
+							
+							if(CurrentDay[1] == 1 || CurrentDay[1] == 7) {
+								continue;
+							}
+							
+							startPeriod = "AM";
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+							startPeriod = "PM";
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
+						}
+					}
+					
+					System.out.println("Number of Days in extended absence: " + ExtendedAbsence + "\n");
+					
 				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
 					absenceList.add(new Absence(teacher,startDate,startPeriod,school));
 				} else {	// invalid date input
@@ -52,8 +106,8 @@ public class CSVReader {
 			csvParser.close();
 		} catch(IOException ioe) {
 			System.out.println("Unable to find absences.csv");
-			ioe.printStackTrace();
-			System.exit(10);		// JO: close program if file not found, could find more elegant method to handle this
+			System.out.println(ioe.getMessage());
+			System.exit(100);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 		return absenceList;
 	}
@@ -67,35 +121,90 @@ public class CSVReader {
 			
 			// DESC: parse thru entries in substitutes.csv
 			for (CSVRecord record : csvParser) {
-				String name = record.get("name");
-				String startDate = record.get("start_date");
-				String startPeriod = record.get("start_period");
-				String endDate = record.get("end_date");
-				String endPeriod = record.get("end_period");
-				String blacklist = record.get("blacklist");
-				String str_teachables = record.get("teachables");
+				String name = "";
+				String str_teachables = "";
+				String blacklist = "";
+				try {
+					name = record.get("name");
+					str_teachables = record.get("teachables");
+					blacklist = record.get("blacklist");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in substitutes.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(111);
+				}
 				
 				// DEBUG: output csvParser results
-				System.out.println("Substitute Record: "+name+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod+" | "+blacklist+" | "+str_teachables);
-				
+				System.out.println("Substitute Record: "+name+" | "+str_teachables+" | "+blacklist);
+
 				// TODO: create a substitute
 				ArrayList<String> al_teachables = new ArrayList<String>();
 				al_teachables.addAll(Arrays.asList(str_teachables.toLowerCase().split(" ")));
 				Sub sub = new Sub(name,al_teachables);
 				
+				// TODO: set sub's blacklist
+				
+				subList.add(sub);
+			}
+			csvParser.close();
+		} catch(IOException ioe) {
+			System.out.println("Unable to find substitutes.csv");
+			System.out.println(ioe.getMessage());
+			System.exit(110);		// JO: close program if file not found, could find more elegant method to handle this
+		}
+		return subList;
+	}
+	
+	// TODO: finish reading on-call contracts
+	// DESC: read unavailabilities from unavailabilities.csv
+	public static void readUnavailabilities(String filename, SubList subList) {
+		Unavailability unavailability;
+		
+		try {
+			csvParser = new CSVParser(new FileReader(filename), CSVFormat.EXCEL.withFirstRecordAsHeader());
+			
+			// DESC: parse thru entries in unavailabilities.csv
+			for (CSVRecord record : csvParser) {
+				String subName = "";
+				String startDate = "";
+				String startPeriod = "";
+				String endDate = "";
+				String endPeriod = "";
+				try {
+					subName = record.get("substitute_name");
+					startDate = record.get("start_date");
+					startPeriod = record.get("start_period");
+					endDate = record.get("end_date");
+					endPeriod = record.get("end_period");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in unavailabilities.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(121);
+				}
+				
+				// DEBUG: output csvParser results
+				System.out.println("Unavailability Record: "+subName+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod);
+				
+				// TODO: assign unavailabilities to Sub
+				
+				// JO: REFACTOR into readUnavailabilities
 				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
 					// TODO: generate individual unavailabilities and add to an unavailabilitiesList
 					
 					// TEMP: reminder println to implement feature
 					System.out.println("Extended sub unavailabilities read.");
-				} else if((startDate+startPeriod+endDate+endPeriod).equals("")) {
-					subList.add(sub);
 				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
-//					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
-					UnavailabilityList ul = new UnavailabilityList();
-					ul.add(new Unavailability(sub,startDate+" "+startPeriod));
-					sub.setUnavailabilities(ul);
-					subList.add(sub);
+					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
+					unavailability = new Unavailability(startDate,startPeriod);
+					for(Sub sub : subList) {
+						if(sub.getName().equalsIgnoreCase(subName)) {
+							UnavailabilityList ul = sub.getUnavailabilities();
+							if(!ul.contains(unavailability)) {
+								sub.addUnavailability(unavailability);
+								break;
+							}
+						}
+					}
 				} else {	// invalid date input
 					// JO: thought this should be considered, could assume all dates are input correctly
 					// JO: cases - startDate happens after endDate, incorrect format, incorrect entry
@@ -106,11 +215,10 @@ public class CSVReader {
 			}
 			csvParser.close();
 		} catch(IOException ioe) {
-			System.out.println("Unable to find substitutes.csv");
-			ioe.printStackTrace();
-			System.exit(11);		// JO: close program if file not found, could find more elegant method to handle this
+			System.out.println("EXCEPTION: Unable to find unavailabilities.csv");
+			System.out.println(ioe.getMessage());
+			System.exit(120);		// JO: close program if file not found, could find more elegant method to handle this
 		}
-		return subList;
 	}
 	
 	// TODO: finish reading preferred subs
@@ -121,8 +229,16 @@ public class CSVReader {
 			
 			// DESC: parse thru entries in preferred.csv
 			for (CSVRecord record : csvParser) {
-				String teacherName = record.get("teacher");
-				String subName = record.get("preferred substitute");
+				String teacherName = "";
+				String subName = "";
+				try {
+					teacherName = record.get("teacher");
+					subName = record.get("preferred substitute");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in preferred.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(131);
+				}
 				
 				// DEBUG: output csvParser results
 				System.out.println("Preferred Record: "+teacherName+" | "+subName);
@@ -133,7 +249,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find preferred.csv");
 			ioe.printStackTrace();
-			System.exit(12);		// JO: close program if file not found, could find more elegant method to handle this
+			System.exit(130);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 	
@@ -145,8 +261,16 @@ public class CSVReader {
 			
 			// DESC: parse thru entries in oncalls.csv
 			for (CSVRecord record : csvParser) {
-				String subName = record.get("substitute");
-				String location = record.get("on-call contract location");
+				String subName = "";
+				String location = "";
+				try {
+					subName = record.get("substitute");
+					location = record.get("on-call contract location");
+				} catch(IllegalArgumentException iae) {
+					System.out.println("EXCEPTION: Incorrect header formatting in oncalls.csv.");
+					System.out.println(iae.getMessage());
+					System.exit(141);
+				}
 				
 				// DEBUG: output csvParser results
 				System.out.println("On-Call Record: "+subName+" | "+location);
@@ -157,7 +281,7 @@ public class CSVReader {
 		} catch(IOException ioe) {
 			System.out.println("Unable to find oncalls.csv");
 			ioe.printStackTrace();
-			System.exit(13);		// JO: close program if file not found, could find more elegant method to handle this
+			System.exit(140);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
 }

@@ -10,19 +10,19 @@ public class CSVWriter {
 	// DESC: outputs sub assignments to assignments.csv
 	public static void writeAssignments(String filename, AbsenceList absences) {
 		try {
-			csvPrinter = new CSVPrinter(new FileWriter(filename), CSVFormat.EXCEL.withHeader("absent_teacher","assigned_substitute","location","date","period"));
+			csvPrinter = new CSVPrinter(new FileWriter(filename), CSVFormat.EXCEL.withHeader("assigned_substitute","absent_teacher","location","date","period"));
 			
 			for(Absence ab : absences) {
 				if(ab.getStatus().equalsIgnoreCase("ASSIGNED")) {
-					csvPrinter.printRecord(ab.getTeacher().getName(),ab.getSub().getName(),ab.getSchool().getName(),ab.getDate(),ab.getPeriod());
+					csvPrinter.printRecord(ab.getSub().getName(),ab.getTeacher().getName(),ab.getSchool().getName(),ab.getDate(),ab.getPeriod());
 				}
 			}
 			csvPrinter.close();
 			
 		} catch(IOException ioe) {
 			System.out.println("Error writing assignments.csv");
-			ioe.printStackTrace();
-			System.exit(20);
+			System.out.println(ioe.getMessage());
+			System.exit(200);
 		}
 	}
 }

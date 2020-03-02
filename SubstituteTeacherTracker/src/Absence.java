@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 
-public class Absence{
+public class Absence {
+
 	private Teacher teacher;
 	private String date;
 	private String period;
@@ -12,26 +14,16 @@ public class Absence{
 		this.date = date;
 		this.period = period;
 		this.school = school;
+		sub = new Sub("",new ArrayList<String>());
 		updateStatus();
 	}
 	
-	//ZAC: Logic to assign substitute to absence based on teacher-substitute compatibility.
-	//ZAC: May need a try/catch block for the case that subList is empty.
-	public void assignSub(SubList subList)
-	{
-		Sub assignedSub = null;
-		int largest = -1; //Lowest possible compatibility value is 0. This -1 ensures a substitute will be assigned, provided subList is not empty.
-		for(Sub sub: subList)
-		{
-			if(sub.compareTo(this.teacher)>largest)
-			{
-				assignedSub = sub;
-				largest = assignedSub.compareTo(this.teacher);
-			}
-		}
-		this.sub = assignedSub;
-		updateStatus();
-	}
+//	public void assignSub(SubList subList)
+//	{
+//		SubAssigner ass1 = new SubAssigner();
+//		sub = ass1.assignRandom(subList, teacher, date);
+//		updateStatus();
+//	}
 	
 	public Teacher getTeacher() {
 		return teacher;
@@ -55,17 +47,17 @@ public class Absence{
 		return sub;
 	}
 	
-	public String getStatus() {
-		return status;
-	}
-	
 	public void setSub(Sub sub) {
 		this.sub = sub;
 		updateStatus();
 	}
 	
+	public String getStatus() {
+		return status;
+	}
+	
 	private void updateStatus() {
-		if(this.sub == null) {
+		if(this.sub.getName().equalsIgnoreCase("")) {
 			this.status = "UNASSIGNED";
 		} else {
 			this.status = "ASSIGNED";
@@ -75,12 +67,12 @@ public class Absence{
 	public String toString() {
 		String str = "";
 		if(status.equalsIgnoreCase("UNASSIGNED")) {
-			str += "\n\nABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
-				   "\nLocation: "+school.getName()+"\nStatus: "+status;
+			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+				   "\nLocation: "+school.getName()+"\nTeachables: "+teacher.getTeachables()+"\nStatus: "+status+"\n";
 		} else if(status.equalsIgnoreCase("ASSIGNED")) {
-			str += "\n\nABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
-					   "\nLocation: "+school.getName()+"\nStatus: "+status+
-				   "\nAssigned substitute: "+sub.getName();
+			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+				   "\nLocation: "+school.getName()+"\nTeachables: "+teacher.getTeachables()+"\nStatus: "+status+
+				   "\nAssigned substitute: "+sub.getName()+"\n";
 		}
 		return str;
 	}

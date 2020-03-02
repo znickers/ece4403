@@ -126,4 +126,9 @@ public class UnavailabilityList implements List<Unavailability> {
 	public <T> T[] toArray(T[] unavailabilities) {
 		return this.unavailabilities.toArray(unavailabilities);
 	}
+	
+	public String toString()
+	{
+		return unavailabilities.toString();
+	}
 }

@@ -1,25 +1,22 @@
 
 public class Unavailability {
-	// JO: does an Unavailability need to know the Sub it belongs to?
-	private Sub sub;
 	private String date;
+	private String period;
 	
-	public Unavailability(Sub sub, String date) {
-		this.sub = sub;
+	public Unavailability(String date, String period) {
 		this.date = date;
-	}
-	
-	public Sub getSub() {
-		return sub;
+		this.period = period;
 	}
 	
 	public String getDate() {
 		return date;
 	}
 	
+	public String getPeriod() {
+		return period;
+	}
+	
 	public String toString() {
-		String str = "";
-		str += "UNAVAILABILITY: "+date;
-		return str;
+		return "UNAVAILABILITY: "+date+" "+period;
 	}
 }
