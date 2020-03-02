@@ -9,7 +9,6 @@ import org.apache.commons.csv.*;
 public class CSVReader {
 	private static CSVParser csvParser;
 	
-	// TODO: finish reading absences
 	// DESC: read absences from absences.csv
 	public static AbsenceList readAbsences(String filename) {
 		AbsenceList absenceList = new AbsenceList();
@@ -41,57 +40,17 @@ public class CSVReader {
 				// DEBUG: output csvParser results
 				System.out.println("Absence Record: "+name+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod+" | "+location+" | "+str_teachables);
 				
-				// TODO: create an absence
 				School school = new School(location);
 				ArrayList<String> al_teachables = new ArrayList<String>();
-				al_teachables.addAll(Arrays.asList(str_teachables.toLowerCase().split(" ")));
+				al_teachables.addAll(Arrays.asList(str_teachables.toLowerCase().split("/")));
 				Teacher teacher = new Teacher(name,school,al_teachables);
 				
 				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
-					// TODO: generate individual absences and add to the absenceList
-					
 					// TEMP: reminder println to implement feature
 					System.out.println("\nExtended absence read.");
 					
-					DateConverter dateconvert = new DateConverter();
-					int[] ISOStart = dateconvert.convertDateString(startDate);
-					int[] ISOEnd = dateconvert.convertDateString(endDate);
-					
-					int ExtendedAbsence = ((ISOEnd[0] - ISOStart[0])*7) + (ISOEnd[1] - ISOStart[1] +1);
-					
-					for(int i = 0; i < ExtendedAbsence; i++) {
-						if((i == 0) && (startPeriod.equals("PM"))){
-							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
-						}
-						else if((i == 0) && (startPeriod.equals("AM"))) {
-							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
-							startPeriod = "PM";
-							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
-						}
-						else if((i == (ExtendedAbsence - 1)) && endPeriod.equals("AM")) {
-							startDate = endDate;
-							startPeriod = endPeriod;
-							System.out.println(endPeriod);
-							
-							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
-						}
-						else if( i > 0) {
-			
-							startDate = dateconvert.addADay(startDate);
-							int[] CurrentDay = dateconvert.convertDateString(startDate);
-							
-							if(CurrentDay[1] == 1 || CurrentDay[1] == 7) {
-								continue;
-							}
-							
-							startPeriod = "AM";
-							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
-							startPeriod = "PM";
-							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
-						}
-					}
-					
-					System.out.println("Number of Days in extended absence: " + ExtendedAbsence + "\n");
+					// JO: deferred Extended Absence handling to helper method, thought it'd make this method easier to read
+					readExtendedAbsence(absenceList,teacher,school,startDate,startPeriod,endDate,endPeriod);
 					
 				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
 					absenceList.add(new Absence(teacher,startDate,startPeriod,school));
@@ -112,7 +71,6 @@ public class CSVReader {
 		return absenceList;
 	}
 	
-	// TODO: finish reading absences
 	// DESC: read substitutes from substitutes.csv
 	public static SubList readSubstitutes(String filename) {
 		SubList subList = new SubList();
@@ -123,11 +81,11 @@ public class CSVReader {
 			for (CSVRecord record : csvParser) {
 				String name = "";
 				String str_teachables = "";
-				String blacklist = "";
+				String str_blacklist = "";
 				try {
 					name = record.get("name");
 					str_teachables = record.get("teachables");
-					blacklist = record.get("blacklist");
+					str_blacklist = record.get("blacklist");
 				} catch(IllegalArgumentException iae) {
 					System.out.println("EXCEPTION: Incorrect header formatting in substitutes.csv.");
 					System.out.println(iae.getMessage());
@@ -135,14 +93,20 @@ public class CSVReader {
 				}
 				
 				// DEBUG: output csvParser results
-				System.out.println("Substitute Record: "+name+" | "+str_teachables+" | "+blacklist);
+				System.out.println("Substitute Record: "+name+" | "+str_teachables+" | "+str_blacklist);
 
-				// TODO: create a substitute
 				ArrayList<String> al_teachables = new ArrayList<String>();
-				al_teachables.addAll(Arrays.asList(str_teachables.toLowerCase().split(" ")));
+				al_teachables.addAll(Arrays.asList(str_teachables.toLowerCase().split("/")));
 				Sub sub = new Sub(name,al_teachables);
 				
 				// TODO: set sub's blacklist
+				SchoolList blacklist = new SchoolList();
+				ArrayList<String> al_blacklist = new ArrayList<String>();
+				al_blacklist.addAll(Arrays.asList(str_blacklist.split("/")));
+				for(String schoolName : al_blacklist) {
+					blacklist.add(new School(schoolName));
+				}
+				sub.setBlacklist(blacklist);
 				
 				subList.add(sub);
 			}
@@ -183,27 +147,37 @@ public class CSVReader {
 				}
 				
 				// DEBUG: output csvParser results
-				System.out.println("Unavailability Record: "+subName+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod);
+				System.out.println("\nUnavailability Record: "+subName+" | "+startDate+" | "+startPeriod+" | "+endDate+" | "+endPeriod);
 				
 				// TODO: assign unavailabilities to Sub
+				Sub unSub = new Sub("",new ArrayList<String>());
+				for(Sub sub : subList) {
+					if(sub.getName().equalsIgnoreCase(subName)) {
+						unSub = sub;
+					}
+				}
+				if(unSub.getName().equalsIgnoreCase("")) {
+					System.out.println("No Sub in system with name '"+subName+"' to assign unavailability to.");
+					continue;
+				}
+//				System.out.println("DEBUG - Registered sub: "+subName);
 				
 				// JO: REFACTOR into readUnavailabilities
 				if((!startDate.equalsIgnoreCase(endDate)) || (!startPeriod.equalsIgnoreCase(endPeriod))) {		// extended absences
 					// TODO: generate individual unavailabilities and add to an unavailabilitiesList
 					
 					// TEMP: reminder println to implement feature
-					System.out.println("Extended sub unavailabilities read.");
+					System.out.println("DEBUG - Extended sub unavailability read.");
+					
+					readExtendedUnavailability(unSub,startDate,startPeriod,endDate,endPeriod);
 				} else if(startDate.equalsIgnoreCase(endDate) && startPeriod.equalsIgnoreCase(endPeriod)) {		// single absence
-					System.out.println("Single sub unavailability read.");		// DEBUG: println statement
+					System.out.println("DEBUG - Single sub unavailability read.");		// DEBUG: println statement
+					
 					unavailability = new Unavailability(startDate,startPeriod);
-					for(Sub sub : subList) {
-						if(sub.getName().equalsIgnoreCase(subName)) {
-							UnavailabilityList ul = sub.getUnavailabilities();
-							if(!ul.contains(unavailability)) {
-								sub.addUnavailability(unavailability);
-								break;
-							}
-						}
+					UnavailabilityList ul = unSub.getUnavailabilities();
+					boolean duplicate = checkDuplicateUnavailability(unSub,startDate,startPeriod);
+					if(!duplicate) {
+						unSub.addUnavailability(unavailability);
 					}
 				} else {	// invalid date input
 					// JO: thought this should be considered, could assume all dates are input correctly
@@ -284,4 +258,122 @@ public class CSVReader {
 			System.exit(140);		// JO: close program if file not found, could find more elegant method to handle this
 		}
 	}
+	
+	// DESC: creates single period Absences from an extended Absence range and adds them to an AbsenceList
+	private static void readExtendedAbsence(AbsenceList absenceList,Teacher teacher,School school,String startDate,String startPeriod,String endDate,String endPeriod) {
+		DateConverter dateconvert = new DateConverter();
+		int[] ISOStart = dateconvert.convertDateString(startDate);
+		int[] ISOEnd = dateconvert.convertDateString(endDate);
+		
+		int extendedAbsence = ((ISOEnd[0] - ISOStart[0])*7) + (ISOEnd[1] - ISOStart[1] +1);
+		
+		for(int i = 0; i < extendedAbsence; i++) {
+			if((i == 0) && (startPeriod.equals("PM"))){
+				absenceList.add(new Absence(teacher,startDate,startPeriod,school));
+			}
+			else if((i == 0) && (startPeriod.equals("AM"))) {
+				absenceList.add(new Absence(teacher,startDate,startPeriod,school));
+				startPeriod = "PM";
+				absenceList.add(new Absence(teacher,startDate,startPeriod,school));
+			}
+			else if((i == (extendedAbsence - 1)) && endPeriod.equals("AM")) {
+				startDate = endDate;
+				startPeriod = endPeriod;
+				System.out.println(endPeriod);
+				
+				absenceList.add(new Absence(teacher,startDate,startPeriod,school));
+			}
+			else if( i > 0) {
+
+				startDate = dateconvert.addADay(startDate);
+				int[] CurrentDay = dateconvert.convertDateString(startDate);
+				
+				if(CurrentDay[1] == 1 || CurrentDay[1] == 7) {
+					continue;
+				}
+				
+				startPeriod = "AM";
+				absenceList.add(new Absence(teacher,startDate,startPeriod,school));
+				startPeriod = "PM";
+				absenceList.add(new Absence(teacher,startDate,startPeriod,school));
+			}
+		}
+		
+		System.out.println("Number of Days in extended absence: " + extendedAbsence + "\n");
+	}
+	
+	// DESC: creates single period Unavailabilities from an extended Unavailability range and adds them to a Sub's unavailabilities
+	private static void readExtendedUnavailability(Sub sub,String startDate,String startPeriod,String endDate,String endPeriod) {
+		DateConverter dateconvert = new DateConverter();
+		int[] ISOStart = dateconvert.convertDateString(startDate);
+		int[] ISOEnd = dateconvert.convertDateString(endDate);
+		
+		int extendedUnavailability = ((ISOEnd[0] - ISOStart[0])*7) + (ISOEnd[1] - ISOStart[1] +1);
+		
+		boolean duplicate = false;
+		
+		for(int i = 0; i < extendedUnavailability; i++) {
+			if((i == 0) && (startPeriod.equals("PM"))){
+				duplicate = checkDuplicateUnavailability(sub,startDate,startPeriod);
+				if(!duplicate) {
+					sub.addUnavailability(new Unavailability(startDate,startPeriod));
+				}
+			}
+			else if((i == 0) && (startPeriod.equals("AM"))) {
+				duplicate = checkDuplicateUnavailability(sub,startDate,startPeriod);
+				if(!duplicate) {
+					sub.addUnavailability(new Unavailability(startDate,startPeriod));
+				}
+				startPeriod = "PM";
+				duplicate = checkDuplicateUnavailability(sub,startDate,startPeriod);
+				if(!duplicate) {
+					sub.addUnavailability(new Unavailability(startDate,startPeriod));
+				}
+			}
+			else if((i == (extendedUnavailability - 1)) && endPeriod.equals("AM")) {
+				startDate = endDate;
+				startPeriod = endPeriod;
+				System.out.println(endPeriod);
+				duplicate = checkDuplicateUnavailability(sub,startDate,startPeriod);
+				if(!duplicate) {
+					sub.addUnavailability(new Unavailability(startDate,startPeriod));
+				}
+			}
+			else if( i > 0) {
+
+				startDate = dateconvert.addADay(startDate);
+				int[] CurrentDay = dateconvert.convertDateString(startDate);
+				
+				if(CurrentDay[1] == 1 || CurrentDay[1] == 7) {
+					continue;
+				}
+				
+				startPeriod = "AM";
+				duplicate = checkDuplicateUnavailability(sub,startDate,startPeriod);
+				if(!duplicate) {
+					sub.addUnavailability(new Unavailability(startDate,startPeriod));
+				}
+				startPeriod = "PM";
+				duplicate = checkDuplicateUnavailability(sub,startDate,startPeriod);
+				if(!duplicate) {
+					sub.addUnavailability(new Unavailability(startDate,startPeriod));
+				}
+			}
+		}
+		System.out.println("Number of Days in extended unavailability: " + extendedUnavailability + "\n");
+	}
+	
+	// DESC: checks for an existing Unavailability in a Sub's unavailabilities at a given a date
+	private static boolean checkDuplicateUnavailability(Sub sub,String startDate,String startPeriod) {
+		boolean duplicate = false;				// prevent duplicate unavailabilities from being assigned
+		UnavailabilityList ul = sub.getUnavailabilities();
+		for(int i=0;i<ul.size();i++) {
+			if(ul.get(i).getDate().equalsIgnoreCase(startDate) && ul.get(i).getPeriod().equalsIgnoreCase(startPeriod)) {
+				duplicate = true;
+				break;
+			}
+		}
+		return duplicate;
+	}
+	
 }

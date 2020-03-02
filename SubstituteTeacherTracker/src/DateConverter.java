@@ -43,8 +43,11 @@ public class DateConverter {
 		try {
 			cal.setTime(dateFormat.parse(OldDate));
 		}
-		catch(ParseException e){
-			e.printStackTrace();
+		catch(ParseException pe){
+			System.out.println("EXCEPTION: Unable to parse date in DateConverter.");
+			System.out.println(pe.getMessage());
+			pe.printStackTrace();
+			System.exit(300);
 		}
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		String NewDate = dateFormat.format(cal.getTime());

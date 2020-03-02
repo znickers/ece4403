@@ -7,7 +7,6 @@ public class SubAssigner
 	public void assignSubs(AbsenceList absences, SubList subs) {
 		// TODO: assign subs to each absence
 		for(Absence absence : absences) {
-			boolean assigned = false;
 			boolean available = true;
 			System.out.println("ABSENCE:");
 			System.out.println(absence);
@@ -21,20 +20,23 @@ public class SubAssigner
 				// TODO: check for previously assigned absences at same period
 				available = checkAssignmentConflict(absence,sub);
 				if(!available) {
+					System.out.println("DEBUG: Previous assignment date conflicts with absence date.");
 					break;
 				}
 				
 				// TODO: check unavailabilities for conflicts
 				available = checkUnavailabilityConflict(absence,sub);
 				if(!available) {
+					System.out.println("DEBUG: Sub unavailability date conflicts with absence date.");
 					break;
 				}
 				
 				// TODO: check blacklist for conflicts
-//				available = checkBlacklistConflict(absence,sub);
-//				if(!available) {
-//					break;
-//				}
+				available = checkBlacklistConflict(absence,sub);
+				if(!available) {
+					System.out.println("DEBUG: Sub school blacklist conflicts with absence location.");
+					break;
+				}
 				
 				// TODO: check half-day for conflicts
 				// JO: this feature may be complicated... need to know school on specific date...
@@ -71,24 +73,20 @@ public class SubAssigner
 			
 			// TODO: assign based on teachables
 			// JO: skip if assigned via preferred
-			if(!assigned) {
-				SubList teachableSubs = assignByTeachables(absence,availableSubs);
-				System.out.println("TEACHABLE SUBS:");
-				System.out.println(teachableSubs);
-				System.out.println();
-				if(teachableSubs.size() == 1) {
-					absence.setSub(teachableSubs.get(0));
-					assigned = true;
-				} else if(!teachableSubs.isEmpty()) {
-					availableSubs = teachableSubs;
-				} // if empty do nothing
-			}
+			SubList teachableSubs = assignByTeachables(absence,availableSubs);
+			System.out.println("TEACHABLE SUBS:");
+			System.out.println(teachableSubs);
+			System.out.println();
+			if(teachableSubs.size() == 1) {
+				absence.setSub(teachableSubs.get(0));
+				continue;
+			} else if(!teachableSubs.isEmpty()) {
+				availableSubs = teachableSubs;
+			} // if empty do nothing
 			
 			// TODO: assign based on random
 			// JO: skip if assigned via preferred
-			if(!assigned) {
-				assigned = assignRandom(absence,availableSubs);
-			}
+			assignRandom(absence,availableSubs);
 		}
 	}
 	
@@ -109,6 +107,18 @@ public class SubAssigner
 		boolean available = true;
 		for(Unavailability u : sub.getUnavailabilities()) {
 			if(u.getDate().equalsIgnoreCase(absence.getDate()) && u.getPeriod().equalsIgnoreCase(absence.getPeriod())) {
+				available = false;
+				break;
+			}
+		}
+		return available;
+	}
+	
+	// DESC: helper method to check for conflicts with Sub blacklist
+	private boolean checkBlacklistConflict(Absence absence, Sub sub) {
+		boolean available = true;
+		for(School school : sub.getBlacklist()) {
+			if(school.getName().equalsIgnoreCase(absence.getSchool().getName())) {
 				available = false;
 				break;
 			}
@@ -140,19 +150,14 @@ public class SubAssigner
 		return suitableSubs;
 	}
 	
-	private boolean assignRandom(Absence absence, SubList subList)
+	private void assignRandom(Absence absence, SubList subList)
 	{
-		boolean assigned;
-		
 		if(subList.isEmpty()) {
-			assigned = false;
+			System.out.println("\nNo subs available to assign to absence.");
 		} else {
 			Random subIndex = new Random();
 			absence.setSub(subList.get(subIndex.nextInt(subList.size())));
-			assigned = true;
 		}
-
-		return assigned;
 	}
 	
 //	private int compareTo(Sub sub,Teacher teacher)
