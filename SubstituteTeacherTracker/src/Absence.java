@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Absence {
 
@@ -13,15 +14,16 @@ public class Absence {
 		this.date = date;
 		this.period = period;
 		this.school = school;
+		sub = new Sub("",new ArrayList<String>());
 		updateStatus();
 	}
 	
-	public void assignSub(SubList subList)
-	{
-		SubAssigner ass1 = new SubAssigner();
-		sub = ass1.assignRandom(subList, teacher, date);
-		updateStatus();
-	}
+//	public void assignSub(SubList subList)
+//	{
+//		SubAssigner ass1 = new SubAssigner();
+//		sub = ass1.assignRandom(subList, teacher, date);
+//		updateStatus();
+//	}
 	
 	public Teacher getTeacher() {
 		return teacher;
@@ -45,12 +47,17 @@ public class Absence {
 		return sub;
 	}
 	
+	public void setSub(Sub sub) {
+		this.sub = sub;
+		updateStatus();
+	}
+	
 	public String getStatus() {
 		return status;
 	}
 	
 	private void updateStatus() {
-		if(this.sub == null) {
+		if(this.sub.getName().equalsIgnoreCase("")) {
 			this.status = "UNASSIGNED";
 		} else {
 			this.status = "ASSIGNED";
@@ -60,12 +67,12 @@ public class Absence {
 	public String toString() {
 		String str = "";
 		if(status.equalsIgnoreCase("UNASSIGNED")) {
-			str += "\n\nABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
-				   "\nLocation: "+school.getName()+"\nStatus: "+status;
+			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+				   "\nLocation: "+school.getName()+"\nTeachables: "+teacher.getTeachables()+"\nStatus: "+status+"\n";
 		} else if(status.equalsIgnoreCase("ASSIGNED")) {
-			str += "\n\nABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
-					   "\nLocation: "+school.getName()+"\nStatus: "+status+
-				   "\nAssigned substitute: "+sub.getName();
+			str += "ABSENCE\nTeacher: "+teacher.getName()+"\nDate: "+date+" "+period+
+				   "\nLocation: "+school.getName()+"\nTeachables: "+teacher.getTeachables()+"\nStatus: "+status+
+				   "\nAssigned substitute: "+sub.getName()+"\n";
 		}
 		return str;
 	}

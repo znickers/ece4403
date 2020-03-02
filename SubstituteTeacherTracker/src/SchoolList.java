@@ -126,4 +126,9 @@ public class SchoolList implements List<School> {
 	public <T> T[] toArray(T[] schools) {
 		return this.schools.toArray(schools);
 	}
+	
+	public String toString()
+	{
+		return schools.toString();
+	}
 }

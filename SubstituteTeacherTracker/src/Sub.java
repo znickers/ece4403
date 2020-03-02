@@ -7,7 +7,7 @@ public class Sub implements Comparable<Teacher>{
 	private SchoolList blacklist;
 	// JO: maybe separate class for unavailabilities like with Absences
 	// JO: can have UnavailabilityList also
-	private ArrayList<String> unavailabilities;
+	private UnavailabilityList unavailabilities;
 	private SchoolList schools;		// schools a Sub is assigned to
 	private AbsenceList assignedAbsences;	// absences a Sub is assigned to
 	
@@ -18,7 +18,7 @@ public class Sub implements Comparable<Teacher>{
 		this.name = name;
 		this.teachables = teachables;
 		this.blacklist = new SchoolList();
-		this.unavailabilities = new ArrayList<String>();
+		this.unavailabilities = new UnavailabilityList();
 		this.schools = new SchoolList();
 		this.assignedAbsences = new AbsenceList();
 	}
@@ -27,15 +27,15 @@ public class Sub implements Comparable<Teacher>{
 		this.blacklist = blacklist;
 	}
 	
-	public void addUnavailability(String unavailability) {
+	public void addUnavailability(Unavailability unavailability) {
 		unavailabilities.add(unavailability);
 	}
 	
-	public ArrayList<String> getUnavailabilities() {
+	public UnavailabilityList getUnavailabilities() {
 		return unavailabilities;
 	}
 	
-	public void setUnavailabilities(ArrayList<String> unavailabilities) {
+	public void setUnavailabilities(UnavailabilityList unavailabilities) {
 		this.unavailabilities = unavailabilities;
 	}
 	
@@ -69,18 +69,18 @@ public class Sub implements Comparable<Teacher>{
 		blacklist.remove(school);
 	}
 	
-	public boolean checkConflict(String date)
-	{
-		for(String unavailability: unavailabilities)
-		{
-			if(date.equals(unavailability.substring(0,5)))
-				return true;
-		}
-		for(Absence absence: getAssignedAbsences())
-			if(date.equals(absence.getDate()))
-				return true;
-		return false;
-	}
+//	public boolean checkConflict(String date)
+//	{
+//		for(Unavailability unavailability: unavailabilities)
+//		{
+//			if(date.equals(unavailability.substring(0,5)))
+//				return true;
+//		}
+//		for(Absence absence: getAssignedAbsences())
+//			if(date.equals(absence.getDate()))
+//				return true;
+//		return false;
+//	}
 	
 	public int compareTo(Teacher teacher)
 	{
@@ -111,7 +111,7 @@ public class Sub implements Comparable<Teacher>{
 		}
 		if(!unavailabilities.isEmpty()) {
 			str += "\nUnavailabilities:";
-			for(String u : unavailabilities) {
+			for(Unavailability u : unavailabilities) {
 				str += "\n"+u;
 			}
 		}

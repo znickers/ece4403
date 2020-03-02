@@ -126,4 +126,9 @@ public class TeacherList implements List<Teacher> {
 	public <T> T[] toArray(T[] teachers) {
 		return this.teachers.toArray(teachers);
 	}
+	
+	public String toString()
+	{
+		return teachers.toString();
+	}
 }

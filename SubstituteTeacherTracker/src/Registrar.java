@@ -12,23 +12,21 @@ public class Registrar {
 		CSVReader.readOnCalls("data/oncalls.csv");
 		
 		//DEBUG: Test code for assigning substitutes to absences based on teacher-substitute teachable compatibility.
-		System.out.println("");
+		System.out.println();
 		System.out.println(absenceList);
-		System.out.println("");
+		System.out.println();
 		System.out.println(subList);
 
-		System.out.println("");
+		System.out.println();
 		CSVReader.readUnavailabilities("data/unavailabilities.csv", subList);
 		System.out.println(subList);
-		System.out.println("");
+		System.out.println();
 		
-		System.out.println("Absence dates");
-		for(Absence absence: absenceList)
-		{
-			System.out.println(absence.getDate());
-			absence.assignSub(subList);
-		}
-		System.out.println("");
+		SubAssigner subAssigner = new SubAssigner();
+		subAssigner.assignSubs(absenceList, subList);
+		CSVWriter.writeAssignments("data/assignments.csv", absenceList);
+		System.out.println(absenceList);
+		System.out.println();
 		
 //		for(Absence absence: absenceList)
 //		{
