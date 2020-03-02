@@ -2,13 +2,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SubAssigner
-{
-	private Sub assignedSub;
-	
+{	
 	// DESC: method to assign subs to all absences
 	public void assignSubs(AbsenceList absences, SubList subs) {
-		AbsenceList unassignedAbsences = new AbsenceList();
-		
 		// TODO: assign subs to each absence
 		for(Absence absence : absences) {
 			boolean assigned = false;
