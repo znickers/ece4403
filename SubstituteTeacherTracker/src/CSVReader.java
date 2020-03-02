@@ -60,10 +60,11 @@ public class CSVReader {
 					int ExtendedAbsence = ((ISOEnd[0] - ISOStart[0])*7) + (ISOEnd[1] - ISOStart[1] +1);
 					
 					for(int i = 0; i < ExtendedAbsence; i++) {
-						if(i == 0) {
+						if((i == 0) && (startPeriod.equals("PM"))){
 							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
 						}
-						else if((i == 0) && (startPeriod.equals("AM"))){
+						else if((i == 0) && (startPeriod.equals("AM"))) {
+							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
 							startPeriod = "PM";
 							absenceList.add(new Absence(new Teacher(name,school,al_teachables),startDate,startPeriod,school));
 						}
