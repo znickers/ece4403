@@ -17,21 +17,21 @@ public class SubAssigner
 			// iterate thru subs and 
 			SubList availableSubs = new SubList();
 			for(Sub sub : subs) {
-				// TODO: check for previously assigned absences at same period
+				// DESC: check for previously assigned absences at same period
 				available = checkAssignmentConflict(absence,sub);
 				if(!available) {
 					System.out.println("DEBUG: Previous assignment date conflicts with absence date.");
 					continue;
 				}
 				
-				// TODO: check unavailabilities for conflicts
+				// DESC: check unavailabilities for conflicts
 				available = checkUnavailabilityConflict(absence,sub);
 				if(!available) {
 					System.out.println("DEBUG: Sub unavailability date conflicts with absence date.");
 					continue;
 				}
 				
-				// TODO: check blacklist for conflicts
+				// DESC: check blacklist for conflicts
 				available = checkBlacklistConflict(absence,sub);
 				if(!available) {
 					System.out.println("DEBUG: Sub school blacklist conflicts with absence location.");
@@ -44,10 +44,10 @@ public class SubAssigner
 				// JO: also not worth checking until a Sub has been assigned an Absence
 //				available = checkHalfDayConflict(absence,sub);
 //				if(!available) {
-//					break;
+//					continue;
 //				}
 				
-				// TODO: make list of subs who are available
+				// DESC: make list of subs who are available
 				if(available) {
 					availableSubs.add(sub);
 				}
@@ -65,7 +65,7 @@ public class SubAssigner
 			// JO: HashMap?
 			// JO: also not worth checking until a Sub has been assigned an Absence
 			
-			// TODO: assign based on on-call
+			// DESC: assign based on on-call
 			availableSubs = assignByOnCall(absence,availableSubs);
 			if(availableSubs.size() == 1) {
 				absence.setSub(availableSubs.get(0));
@@ -75,7 +75,7 @@ public class SubAssigner
 			// TODO: assign based on preferred
 //			assigned = assignByPreferred(absence,availableSubs);
 			
-			// TODO: assign based on teachables
+			// DESC: assign based on teachables
 			// JO: skip if assigned via preferred
 			SubList teachableSubs = assignByTeachables(absence,availableSubs);
 			System.out.println("TEACHABLE SUBS:");
@@ -88,7 +88,7 @@ public class SubAssigner
 				availableSubs = teachableSubs;
 			} // if empty do nothing
 			
-			// TODO: assign based on random
+			// DESC: assign based on random
 			// JO: skip if assigned via preferred
 			assignRandom(absence,availableSubs);
 		}
@@ -98,11 +98,12 @@ public class SubAssigner
 	private boolean checkAssignmentConflict(Absence absence, Sub sub)
 	{
 		boolean available = true;
-		for(Absence assignedAbsence: sub.getAssignedAbsences())
+		for(Absence assignedAbsence: sub.getAssignedAbsences()) {
 			if(absence.getDate().equalsIgnoreCase(assignedAbsence.getDate()) && absence.getPeriod().equalsIgnoreCase(assignedAbsence.getPeriod())) {
 				available = false;
 				break;
 			}
+		}
 		return available;
 	}
 	
@@ -181,16 +182,4 @@ public class SubAssigner
 			absence.setSub(subList.get(subIndex.nextInt(subList.size())));
 		}
 	}
-	
-//	private int compareTo(Sub sub,Teacher teacher)
-//	{
-//		int compatibility = 0; //ZAC: Integer value to represent teacher-substitute compatibility. Higher value represents better compatibility.
-//		ArrayList<String> teacherTeachables = teacher.getTeachables();
-//		for(String teachable: teacherTeachables)
-//		{
-//			if(sub.getTeachables().contains(teachable))
-//				compatibility++; //ZAC: If teacher and substitute share a common teachable, compatibility value will increase by 1.
-//		}
-//		return compatibility;
-//	}
 }
